@@ -101,4 +101,325 @@
 		</Reference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="Accordion">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Accordion.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Assembly-CSharp">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Assembly-CSharp.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Backtrace.Unity">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Backtrace.Unity.dll</HintPath>
+	  </Reference>
+	  <Reference Include="BestHTTP">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\BestHTTP.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Bigpoint.Logging">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Bigpoint.Logging.dll</HintPath>
+	  </Reference>
+	  <Reference Include="CakeBox">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\CakeBox.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Coffee.UIParticle">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Coffee.UIParticle.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Core">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Core.dll</HintPath>
+	  </Reference>
+	  <Reference Include="DOTween">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\DOTween.dll</HintPath>
+	  </Reference>
+	  <Reference Include="DOTween46">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\DOTween46.dll</HintPath>
+	  </Reference>
+	  <Reference Include="enum2int">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\enum2int.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppMono.Security">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppMono.Security.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppSystem">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppSystem.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppSystem.Configuration">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppSystem.Configuration.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppSystem.Core">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppSystem.Core.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppSystem.Drawing">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppSystem.Drawing.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppSystem.IO.Compression">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppSystem.IO.Compression.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppSystem.Numerics">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppSystem.Numerics.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppSystem.Runtime.Serialization">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppSystem.Runtime.Serialization.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppSystem.Windows.Forms">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppSystem.Windows.Forms.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppSystem.Xml">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppSystem.Xml.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Il2CppSystem.Xml.Linq">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Il2CppSystem.Xml.Linq.dll</HintPath>
+	  </Reference>
+	  <Reference Include="libcom-csharp">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\libcom-csharp.dll</HintPath>
+	  </Reference>
+	  <Reference Include="libcom-netdotnet">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\libcom-netdotnet.dll</HintPath>
+	  </Reference>
+	  <Reference Include="libcom-protocol">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\libcom-protocol.dll</HintPath>
+	  </Reference>
+	  <Reference Include="libcom-websockets">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\libcom-websockets.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Newtonsoft.Json">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Newtonsoft.Json.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Ookii.Dialogs">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Ookii.Dialogs.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Seafight">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Seafight.dll</HintPath>
+	  </Reference>
+	  <Reference Include="SimpleJSON">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\SimpleJSON.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Tayx.Graphy">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Tayx.Graphy.dll</HintPath>
+	  </Reference>
+	  <Reference Include="TestScenes">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\TestScenes.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UniRx">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UniRx.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.Addressables">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Unity.Addressables.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.Burst">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Unity.Burst.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.Core">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Unity.Core.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.DeltaDNA.SDK">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Unity.DeltaDNA.SDK.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.Mathematics">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Unity.Mathematics.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.RenderPipelines.Core.Runtime">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.RenderPipelines.Universal.Runtime">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.ResourceManager">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Unity.ResourceManager.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.TextMeshPro">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Unity.TextMeshPro.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.AccessibilityModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.AccessibilityModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.AIModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.AIModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.AndroidJNIModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.AndroidJNIModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.AnimationModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.AnimationModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.AssetBundleModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.AssetBundleModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.ClothModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.ClothModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.ClusterInputModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.ClusterInputModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.ClusterRendererModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.ClusterRendererModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.ContentLoadModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.ContentLoadModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.CrashReportingModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.CrashReportingModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.DirectorModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.DirectorModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.DSPGraphModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.DSPGraphModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.GameCenterModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.GameCenterModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.GIModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.GIModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.GridModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.GridModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.HotReloadModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.HotReloadModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.ImageConversionModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.ImageConversionModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.InputLegacyModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.InputModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.InputModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.JSONSerializeModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.JSONSerializeModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.LocalizationModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.LocalizationModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.ParticleSystemModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.ParticleSystemModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.PerformanceReportingModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.PerformanceReportingModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.Physics2DModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.Physics2DModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.ProfilerModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.ProfilerModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.PropertiesModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.PropertiesModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.ScreenCaptureModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.ScreenCaptureModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.SharedInternalsModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.SharedInternalsModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.SpriteMaskModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.SpriteMaskModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.SpriteShapeModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.SpriteShapeModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.StreamingModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.StreamingModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.SubstanceModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.SubstanceModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.SubsystemsModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.SubsystemsModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.TerrainModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.TerrainModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.TerrainPhysicsModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.TextCoreFontEngineModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.TextCoreTextEngineModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.TilemapModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.TilemapModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.TLSModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.TLSModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UIElementsModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UIElementsModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UmbraModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UmbraModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UnityAnalyticsCommonModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UnityAnalyticsCommonModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UnityAnalyticsModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UnityConnectModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UnityConnectModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UnityCurlModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UnityCurlModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UnityTestProtocolModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UnityWebRequestModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UnityWebRequestModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.VehiclesModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.VehiclesModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.VFXModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.VFXModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.VideoModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.VideoModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.VirtualTexturingModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.VirtualTexturingModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.VRModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.VRModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.WindModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.WindModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.XRModule">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\UnityEngine.XRModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="WebGL.Functions">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\WebGL.Functions.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Zenject">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Zenject.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Zenject-usage">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\Zenject-usage.dll</HintPath>
+	  </Reference>
+	  <Reference Include="__Generated">
+	    <HintPath>..\..\..\AppData\Local\Seafight\app-2.2.3\launchpad\client\BepInEx\interop\__Generated.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
 </Project>

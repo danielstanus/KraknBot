@@ -77,6 +77,8 @@ using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using UnityEngine;
 
+namespace DearImGuiInjection.BepInEx;
+
 public class UnityMainThreadDispatcher : MonoBehaviour
 {
     public UnityMainThreadDispatcher(IntPtr ptr) : base(ptr) { }

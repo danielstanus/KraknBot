@@ -1,6 +1,7 @@
 using System;
 using BepInEx.Unity.IL2CPP.UnityEngine;
 using UnityEngine;
+using Input = BepInEx.Unity.IL2CPP.UnityEngine.Input;
 
 namespace TestPlugin;
 

@@ -107,7 +107,7 @@ internal static class ImGuiDX11
     {
         if (message == WindowMessage.WM_KEYUP && (VirtualKey)wParam == DearImGuiInjection.CursorVisibilityToggle.Get())
         {
-            SaveOrRestoreCursorPosition();
+            // SaveOrRestoreCursorPosition();
 
             DearImGuiInjection.ToggleCursor();
         }
