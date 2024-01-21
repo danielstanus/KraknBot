@@ -24,8 +24,8 @@ internal static class ImGuiDX11
         RendererFinder.Renderers.DX11Renderer.OnPresent += InitImGui;
 
         RendererFinder.Renderers.DX11Renderer.OnPresent += RenderImGui;
-        RendererFinder.Renderers.DX11Renderer.PreResizeBuffers += PreResizeBuffers;
-        RendererFinder.Renderers.DX11Renderer.PostResizeBuffers += PostResizeBuffers;
+        // RendererFinder.Renderers.DX11Renderer.PreResizeBuffers += PreResizeBuffers;
+        // RendererFinder.Renderers.DX11Renderer.PostResizeBuffers += PostResizeBuffers;
     }
 
     internal static void Dispose()
@@ -35,8 +35,8 @@ internal static class ImGuiDX11
             return;
         }
 
-        RendererFinder.Renderers.DX11Renderer.PostResizeBuffers -= PostResizeBuffers;
-        RendererFinder.Renderers.DX11Renderer.PreResizeBuffers -= PreResizeBuffers;
+        // RendererFinder.Renderers.DX11Renderer.PostResizeBuffers -= PostResizeBuffers;
+        // RendererFinder.Renderers.DX11Renderer.PreResizeBuffers -= PreResizeBuffers;
         RendererFinder.Renderers.DX11Renderer.OnPresent -= RenderImGui;
 
         User32.SetWindowLong(_windowHandle, GWL_WNDPROC, _originalWindowProc);
