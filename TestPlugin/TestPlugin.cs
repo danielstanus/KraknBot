@@ -25,7 +25,7 @@ internal unsafe class TestPlugin : BasePlugin
         Harmony.CreateAndPatchAll(typeof(HarmonyPatches));
 
         ImGuiInjection.Render += BotUI;
-        // ImGuiStyleManager.ApplyDefaultStyle();
+        ImGuiStyleManager.ApplyDefaultStyle();
 
 
         ClassInjector.RegisterTypeInIl2Cpp<BotBehaviour>();

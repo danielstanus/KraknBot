@@ -7,11 +7,17 @@ namespace TestPlugin;
 
 public class BotBehaviour : MonoBehaviour
 {
-    public BotBehaviour(IntPtr ptr) : base(ptr) { }
+    private Collector _collector;
+
+    public BotBehaviour(IntPtr ptr) : base(ptr)
+    {
+        _collector = new Collector();
+    }
 
     private void Update()
     {
         // UpdateMethod();
+        _collector.Update();
     }
 
     private static void UpdateMethod()
