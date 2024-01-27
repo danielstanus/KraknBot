@@ -10,6 +10,7 @@ namespace TestPlugin
     {
         private bool _collectingEnabled = false;
         private GameObject _target;
+        private MovementBehaviour _movementBehaviour;
 
         public void Update()
         {
@@ -18,18 +19,27 @@ namespace TestPlugin
 
             LogWindow.AddLogMessage("Tick!");
 
-            if (!FindNextTarget())
+            if (_target == null || !IsTargetValid(_target))
             {
-                Log.Info("No more boxes to collect");
-                return;
+                if (!FindNextTarget())
+                {
+                    Log.Info("No more boxes to collect");
+                    return;
+                }
             }
 
-            MoveToTarget();
+            // if (HarmonyPatches.Player.GetComponent<MovementBehaviour>().isMoving)
+            // {
+            //     Log.Info("Player is moving");
+            //     return;
+            // }
+            //
+            // MoveToTarget();
         }
 
         public void Start()
         {
-            this._collectingEnabled = true;
+            _collectingEnabled = true;
         }
 
         public void Stop()
@@ -80,6 +90,11 @@ namespace TestPlugin
             var entity = HarmonyPatches.InputController.mapView.GetEntity(entityId);
 
             return entity != null ? entity.gameObject : null;
+        }
+
+        private bool IsTargetValid(GameObject target)
+        {
+            return target != null && target.activeInHierarchy;
         }
     }
 }

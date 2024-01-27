@@ -1,4 +1,7 @@
+using Il2CppInterop.Runtime;
 using ImGuiNET;
+using Seafight.GameActors;
+using UnityEngine;
 using ImGuiInjection = DearImGuiInjection.DearImGuiInjection;
 
 namespace TestPlugin.UI;
@@ -33,16 +36,19 @@ public class PluginUI
                     isBotRunning = !isBotRunning;
                     LogWindow.AddLogMessage(isBotRunning ? "Bot started" : "Bot stopped");
 
-                    if (isBotRunning)
+                    DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
                     {
-                        BotBehaviourInstance.StartCollector(); // Assuming this starts the bot
-                        Log.Info("Bot started");
-                    }
-                    else
-                    {
-                        BotBehaviourInstance.StopCollector(); // Assuming this stops the bot
-                        Log.Info("Bot stopped");
-                    }
+                        if (isBotRunning)
+                        {
+                            BotBehaviourInstance.StartCollector(); // Assuming this starts the bot
+                            Log.Info("Bot started");
+                        }
+                        else
+                        {
+                            BotBehaviourInstance.StopCollector(); // Assuming this stops the bot
+                            Log.Info("Bot stopped");
+                        }
+                    });
                 }
 
                 if (isBotRunning)
@@ -54,6 +60,16 @@ public class PluginUI
                 {
                     LogWindow.AddLogMessage(collectBoxes ? "Collect Boxes enabled" : "Collect Boxes disabled");
                     // Additional logic for collecting boxes can be added here
+                    // List all components of Player
+                    var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
+                    var player = HarmonyPatches.InputController.mapView.GetEntity(entityId);
+                    var playerObject = player.gameObject;
+                    Log.Info($"Component: {playerObject.name}");
+                    Log.Info($"Component: {playerObject.GetIl2CppType().Name}");
+                    var movementBehaviour = playerObject.GetComponent<MovementBehaviour>();
+                    Log.Info($"Component: {movementBehaviour.name}");
+                    Log.Info($"Component: {movementBehaviour.IsMoving}");
+                    Log.Info($"Component: {movementBehaviour.isMoving}");
                 }
 
                 if (ImGui.Checkbox("Shoot NPC", ref shootNPC))

@@ -25,15 +25,23 @@ internal unsafe class TestPlugin : BasePlugin
         Harmony.CreateAndPatchAll(typeof(HarmonyPatches));
 
         ImGuiInjection.Render += BotUI;
-        ImGuiStyleManager.ApplyDefaultStyle();
-
 
         ClassInjector.RegisterTypeInIl2Cpp<BotBehaviour>();
         TestPluginBehaviourHolder = new("TestPluginBehaviourGO");
         GameObject.DontDestroyOnLoad(TestPluginBehaviourHolder);
         TestPluginBehaviourHolder.hideFlags |= HideFlags.HideAndDontSave;
         _botBehaviourInstance = TestPluginBehaviourHolder.AddComponent<BotBehaviour>();
-        PluginUI.BotBehaviourInstance = _botBehaviourInstance;
+        if (_botBehaviourInstance == null)
+        {
+            Log.LogInfo("Failed to add BotBehaviour component.");
+            LogWindow.AddLogMessage("Failed to add BotBehaviour component.");
+        }
+        else
+        {
+            PluginUI.BotBehaviourInstance = _botBehaviourInstance;
+            Log.LogInfo("BotBehaviour instance set in PluginUI.");
+            LogWindow.AddLogMessage("BotBehaviour instance set in PluginUI.");
+        }
 
         LogWindow.AddLogMessage("TestPlugin loaded.");
     }
