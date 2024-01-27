@@ -5,31 +5,22 @@ using Input = BepInEx.Unity.IL2CPP.UnityEngine.Input;
 
 namespace TestPlugin;
 
-public class BotBehaviour : MonoBehaviour
+public class BotBehaviour(IntPtr ptr) : MonoBehaviour(ptr)
 {
-    private Collector _collector;
-
-    public BotBehaviour(IntPtr ptr) : base(ptr)
-    {
-        _collector = new Collector();
-    }
+    private readonly Collector _collector = new();
 
     private void Update()
     {
-        // UpdateMethod();
         _collector.Update();
     }
 
-    private static void UpdateMethod()
+    public void StartCollector()
     {
-        if (Input.GetKeyInt(BepInEx.Unity.IL2CPP.UnityEngine.KeyCode.F6))
-        {
-            Screen.SetResolution(1280, 720, false);
-        }
+        _collector.Start();
+    }
 
-        if (Input.GetKeyInt(BepInEx.Unity.IL2CPP.UnityEngine.KeyCode.F7))
-        {
-            Screen.SetResolution(1920, 1080, false);
-        }
+    public void StopCollector()
+    {
+        _collector.Stop();
     }
 }

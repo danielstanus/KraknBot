@@ -6,8 +6,8 @@ namespace TestPlugin;
 
 public class HarmonyPatches
 {
-    public static GameObject player;
-    public static InputController inputController;
+    public static GameObject Player;
+    public static InputController InputController;
 
     [HarmonyPatch(typeof(GameActorController), nameof(GameActorController.GameActorAdded))]
     [HarmonyPrefix]
@@ -16,7 +16,7 @@ public class HarmonyPatches
         // Implement this
         if (__instance.gameActorModel.playerInfoSystem.UserId.Id == entityId.Id)
         {
-            player = __instance.gameObject;
+            Player = __instance.gameObject;
             Log.Info("Initialized main player: " + entityId.Id.ToString());
         }
     }
@@ -25,9 +25,9 @@ public class HarmonyPatches
     [HarmonyPrefix]
     public static void InputControllerUpdatePrefix(InputController __instance)
     {
-        if (inputController == null)
+        if (InputController == null)
         {
-            inputController = __instance;
+            InputController = __instance;
             Log.Info("InputController instance captured.");
         }
     }

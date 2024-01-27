@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Seafight;
+using Seafight.GameActors;
 
 namespace TestPlugin
 {
@@ -9,13 +10,13 @@ namespace TestPlugin
     {
         private bool _collectingEnabled = false;
         private GameObject _target;
-        private readonly List<GameObject> _removedBoxes = new List<GameObject>();
-        private float _elapsed = 0f;
 
         public void Update()
         {
             if (!_collectingEnabled)
                 return;
+
+            LogWindow.AddLogMessage("Tick!");
 
             if (!FindNextTarget())
             {
@@ -31,6 +32,11 @@ namespace TestPlugin
             this._collectingEnabled = true;
         }
 
+        public void Stop()
+        {
+            this._collectingEnabled = false;
+        }
+
         private void MoveToTarget()
         {
             if (_target == null)
@@ -42,13 +48,38 @@ namespace TestPlugin
             movePosition.x = targetPosition.x;
             movePosition.y = targetPosition.y;
             movePosition.z = -100;
-            HarmonyPatches.inputController.MoveToPoint(movePosition);
+            HarmonyPatches.InputController.MoveToPoint(movePosition);
         }
 
         private bool FindNextTarget()
         {
-            // Adapted logic from C++ to C#
+            var actors = HarmonyPatches.InputController.gameActorModel.Actors;
+            if (actors.Count == 0)
+                return false;
+
+            foreach (var actor in actors)
+            {
+                if (actor.Value == null)
+                    continue;
+
+                if (actor.Value.GameActorType == GameActorType.Box)
+                {
+                    var gameObject = GetGameObject(actor.Key);
+                    if (gameObject == null)
+                        continue;
+
+                    _target = gameObject;
+                    return true;
+                }
+            }
             return false;
+        }
+
+        private GameObject GetGameObject(EntityId entityId)
+        {
+            var entity = HarmonyPatches.InputController.mapView.GetEntity(entityId);
+
+            return entity != null ? entity.gameObject : null;
         }
     }
 }

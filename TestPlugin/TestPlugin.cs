@@ -33,6 +33,7 @@ internal unsafe class TestPlugin : BasePlugin
         GameObject.DontDestroyOnLoad(TestPluginBehaviourHolder);
         TestPluginBehaviourHolder.hideFlags |= HideFlags.HideAndDontSave;
         _botBehaviourInstance = TestPluginBehaviourHolder.AddComponent<BotBehaviour>();
+        PluginUI.BotBehaviourInstance = _botBehaviourInstance;
 
         LogWindow.AddLogMessage("TestPlugin loaded.");
     }
