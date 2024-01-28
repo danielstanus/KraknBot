@@ -4,6 +4,7 @@ using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using MonoMod.RuntimeDetour;
+using TestPlugin.Helpers;
 using TestPlugin.UI;
 using UnityEngine;
 using ImGuiInjection = DearImGuiInjection.DearImGuiInjection;
@@ -27,6 +28,9 @@ internal unsafe class TestPlugin : BasePlugin
         ImGuiInjection.Render += BotUI;
 
         ClassInjector.RegisterTypeInIl2Cpp<BotBehaviour>();
+        ClassInjector.RegisterTypeInIl2Cpp<CoroutineHandler>();
+        var coroutineHandler = CoroutineHandler.Instance;
+
         TestPluginBehaviourHolder = new("TestPluginBehaviourGO");
         GameObject.DontDestroyOnLoad(TestPluginBehaviourHolder);
         TestPluginBehaviourHolder.hideFlags |= HideFlags.HideAndDontSave;

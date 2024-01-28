@@ -1,6 +1,10 @@
+using System;
 using Il2CppInterop.Runtime;
 using ImGuiNET;
+using net.bigpoint.seafight.com.module.inventory;
+using Seafight;
 using Seafight.GameActors;
+using TestPlugin.Helpers;
 using UnityEngine;
 using ImGuiInjection = DearImGuiInjection.DearImGuiInjection;
 
@@ -15,6 +19,9 @@ public class PluginUI
     private bool isBotRunning = false;
     private bool collectBoxes = false;
     private bool shootNPC = false;
+
+    private string reviveOptions = "Emergency\0Standard\0";
+    public static ReviveOption SelectedReviveOption { get; private set; } = ReviveOption.Emergency;
 
     public static void RenderUI()
     {
@@ -70,12 +77,31 @@ public class PluginUI
                     Log.Info($"Component: {movementBehaviour.name}");
                     Log.Info($"Component: {movementBehaviour.IsMoving}");
                     Log.Info($"Component: {movementBehaviour.isMoving}");
+
+                    DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
+                    {
+                        Log.Info($"///////////////////////////////////////////////");
+                        Log.Info($"All cannonballs:");
+                        InventorySystem inventorySystem = MainInstaller.Inject<InventorySystem>();
+                        GameContext.GetCannonballAmount(inventorySystem, InventoryItemType.BALLS);
+                        Log.Info($"///////////////////////////////////////////////");
+                    });
                 }
 
                 if (ImGui.Checkbox("Shoot NPC", ref shootNPC))
                 {
                     LogWindow.AddLogMessage(shootNPC ? "Shoot NPC enabled" : "Shoot NPC disabled");
                     // Additional logic for shooting NPCs can be added here
+                }
+
+                ImGui.Text("Revive Options");
+                string reviveOptionsCombo = "Emergency\0Standard\0";
+
+                int selectedOptionIndex = (int)SelectedReviveOption;
+                if (ImGui.Combo("Revive Type", ref selectedOptionIndex, reviveOptionsCombo))
+                {
+                    SelectedReviveOption = (ReviveOption)selectedOptionIndex;
+                    LogWindow.AddLogMessage($"Selected Revive Option: {SelectedReviveOption}");
                 }
 
                 if (isBotRunning)

@@ -1,30 +1,50 @@
+using net.bigpoint.seafight.com.module.inventory;
+using Seafight;
 using UnityEngine;
 
-namespace TestPlugin.Helpers
+namespace TestPlugin.Helpers;
+
+public static class GameContext
 {
-    public static class GameContext
+    private static GameObject _playerGameObject;
+
+    public static GameObject PlayerGameObject
     {
-        private static GameObject _playerGameObject;
-
-        public static GameObject PlayerGameObject
+        get
         {
-            get
+            if (_playerGameObject != null && !_playerGameObject.Equals(null)) return _playerGameObject;
+
+            var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
+            var playerEntity = HarmonyPatches.InputController.mapView.GetEntity(entityId);
+            _playerGameObject = playerEntity != null ? playerEntity.gameObject : null;
+
+            return _playerGameObject;
+        }
+    }
+
+    public static void ResetContext()
+    {
+        _playerGameObject = null;
+    }
+
+    public static void GetCannonballAmount(InventorySystem inventorySystem, InventoryItemType cannonballType)
+    {
+        // Iterate over each item in the inventory
+        foreach (var item in inventorySystem.Inventory)
+        {
+            // Check if the item is of cannonball type
+            if (item.Key == cannonballType)
             {
-                if (_playerGameObject != null && !_playerGameObject.Equals(null)) return _playerGameObject;
+                // item.Value is a ReactiveDictionary<int, long>
+                foreach (var cannonball in item.Value)
+                {
+                    int cannonballId = cannonball.Key;
+                    long cannonballAmount = cannonball.Value;
 
-                var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
-                var playerEntity = HarmonyPatches.InputController.mapView.GetEntity(entityId);
-                _playerGameObject = playerEntity != null ? playerEntity.gameObject : null;
-
-                return _playerGameObject;
+                    // Log the cannonball ID and its amount
+                    Log.Info("Cannonball ID: " + cannonballId + ", Amount: " + cannonballAmount);
+                }
             }
         }
-
-        public static void ResetContext()
-        {
-            _playerGameObject = null;
-        }
-
-        // Additional properties for other common objects can be added here
     }
 }

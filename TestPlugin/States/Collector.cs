@@ -50,6 +50,7 @@ namespace TestPlugin
         public void Stop()
         {
             this._collectingEnabled = false;
+            this._target = null;
         }
 
         private void MoveToTarget()

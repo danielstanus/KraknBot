@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using HarmonyLib;
+using net.bigpoint.seafight.com.module.inventory;
+using net.bigpoint.seafight.com.module.user;
 using Seafight.GameActors;
 using UniRx;
 using UnityEngine;
+using EventType = net.bigpoint.seafight.com.module.eventsystem.EventType;
 
 namespace TestPlugin.Helpers;
 
