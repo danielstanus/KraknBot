@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Seafight;
 using Seafight.GameActors;
+using TestPlugin.Helpers;
 
 namespace TestPlugin
 {
@@ -17,28 +18,32 @@ namespace TestPlugin
             if (!_collectingEnabled)
                 return;
 
-            LogWindow.AddLogMessage("Tick!");
-
             if (_target == null || !IsTargetValid(_target))
             {
-                if (!FindNextTarget())
+                _target = TargetFinder.FindNext();
+                if (_target == null)
                 {
                     Log.Info("No more boxes to collect");
                     return;
                 }
             }
 
-            // if (HarmonyPatches.Player.GetComponent<MovementBehaviour>().isMoving)
-            // {
-            //     Log.Info("Player is moving");
-            //     return;
-            // }
-            //
-            // MoveToTarget();
+            if (_movementBehaviour.isMoving)
+            {
+                Log.Info("Player is moving");
+                return;
+            }
+
+            MoveToTarget();
         }
 
         public void Start()
         {
+            var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
+            var player = HarmonyPatches.InputController.mapView.GetEntity(entityId);
+            var playerObject = player.gameObject;
+
+            _movementBehaviour ??= playerObject.GetComponent<MovementBehaviour>();
             _collectingEnabled = true;
         }
 

@@ -1,26 +1,29 @@
-using System;
-using BepInEx.Unity.IL2CPP.UnityEngine;
+using TestPlugin;
 using UnityEngine;
-using Input = BepInEx.Unity.IL2CPP.UnityEngine.Input;
 
-namespace TestPlugin;
-
-public class BotBehaviour(IntPtr ptr) : MonoBehaviour(ptr)
+public class BotBehaviour : MonoBehaviour
 {
-    private readonly Collector _collector = new();
-
-    private void Update()
-    {
-        _collector.Update();
-    }
+    private readonly Collector _collector = new Collector();
 
     public void StartCollector()
     {
         _collector.Start();
+        InvokeRepeating(nameof(LazyUpdate), 0f, 1f);
     }
 
     public void StopCollector()
     {
         _collector.Stop();
+        CancelInvoke(nameof(LazyUpdate));
+    }
+
+    private void LazyUpdate()
+    {
+        _collector.Update();
+    }
+
+    private void Update()
+    {
+        // Implement update logic here
     }
 }
