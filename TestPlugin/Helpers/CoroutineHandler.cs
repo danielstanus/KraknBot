@@ -31,7 +31,8 @@ namespace TestPlugin.Helpers
         private void ExecuteDelayedAction()
         {
             _delayedAction?.Invoke();
-            _delayedAction = null; // Clears the action after execution
+            _delayedAction = null;
+            GameContext.ResetContext();
         }
 
         public void CancelDelayedExecution()

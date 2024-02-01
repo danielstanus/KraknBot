@@ -16,6 +16,9 @@ public class PluginUI
     private static PluginUI Instance => Singleton<PluginUI>.Instance;
     public static BotBehaviour BotBehaviourInstance { get; set; }
 
+    public static bool CollectBoxes { get; set; }
+    public static bool ShootNPC { get; set; }
+
     private bool isBotRunning = false;
     private bool collectBoxes = false;
     private bool shootNPC = false;
@@ -30,6 +33,11 @@ public class PluginUI
 
     private void InternalRenderUI()
     {
+        System.Numerics.Vector2 windowPos = new System.Numerics.Vector2(10, 10);
+        System.Numerics.Vector2 windowSize = new System.Numerics.Vector2(400, 300);
+        ImGui.SetNextWindowPos(windowPos, ImGuiCond.FirstUseEver, new System.Numerics.Vector2(1.0f, 1.0f));
+        ImGui.SetNextWindowSize(windowSize, ImGuiCond.FirstUseEver);
+
         if (ImGuiInjection.IsCursorVisible)
         {
             var windowOpen = true;
@@ -66,32 +74,38 @@ public class PluginUI
                 if (ImGui.Checkbox("Collect Boxes", ref collectBoxes))
                 {
                     LogWindow.AddLogMessage(collectBoxes ? "Collect Boxes enabled" : "Collect Boxes disabled");
-                    // Additional logic for collecting boxes can be added here
-                    // List all components of Player
-                    var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
-                    var player = HarmonyPatches.InputController.mapView.GetEntity(entityId);
-                    var playerObject = player.gameObject;
-                    Log.Info($"Component: {playerObject.name}");
-                    Log.Info($"Component: {playerObject.GetIl2CppType().Name}");
-                    var movementBehaviour = playerObject.GetComponent<MovementBehaviour>();
-                    Log.Info($"Component: {movementBehaviour.name}");
-                    Log.Info($"Component: {movementBehaviour.IsMoving}");
-                    Log.Info($"Component: {movementBehaviour.isMoving}");
-
-                    DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
-                    {
-                        Log.Info($"///////////////////////////////////////////////");
-                        Log.Info($"All cannonballs:");
-                        InventorySystem inventorySystem = MainInstaller.Inject<InventorySystem>();
-                        GameContext.GetCannonballAmount(inventorySystem, InventoryItemType.BALLS);
-                        Log.Info($"///////////////////////////////////////////////");
-                    });
+                    CollectBoxes = collectBoxes;
                 }
+
+                // if (ImGui.Checkbox("Collect Boxes", ref collectBoxes))
+                // {
+                //     LogWindow.AddLogMessage(collectBoxes ? "Collect Boxes enabled" : "Collect Boxes disabled");
+                //     // Additional logic for collecting boxes can be added here
+                //     // List all components of Player
+                //     var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
+                //     var player = HarmonyPatches.InputController.mapView.GetEntity(entityId);
+                //     var playerObject = player.gameObject;
+                //     Log.Info($"Component: {playerObject.name}");
+                //     Log.Info($"Component: {playerObject.GetIl2CppType().Name}");
+                //     var movementBehaviour = playerObject.GetComponent<MovementBehaviour>();
+                //     Log.Info($"Component: {movementBehaviour.name}");
+                //     Log.Info($"Component: {movementBehaviour.IsMoving}");
+                //     Log.Info($"Component: {movementBehaviour.isMoving}");
+                //
+                //     DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
+                //     {
+                //         Log.Info($"///////////////////////////////////////////////");
+                //         Log.Info($"All cannonballs:");
+                //         InventorySystem inventorySystem = MainInstaller.Inject<InventorySystem>();
+                //         GameContext.GetCannonballAmount(inventorySystem, InventoryItemType.BALLS);
+                //         Log.Info($"///////////////////////////////////////////////");
+                //     });
+                // }
 
                 if (ImGui.Checkbox("Shoot NPC", ref shootNPC))
                 {
                     LogWindow.AddLogMessage(shootNPC ? "Shoot NPC enabled" : "Shoot NPC disabled");
-                    // Additional logic for shooting NPCs can be added here
+                    ShootNPC = shootNPC;
                 }
 
                 ImGui.Text("Revive Options");

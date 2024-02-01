@@ -15,7 +15,7 @@ public static class TargetFinder
     private static ReactiveDictionary<EntityId, GameActorData> actors;
     private static MovementBehaviour movementBehaviour;
 
-    public static GameObject FindNext()
+    public static GameObject FindNext(GameActorType actorType)
     {
         actors ??= HarmonyPatches.InputController.gameActorModel.Actors;
         movementBehaviour ??= GameContext.PlayerGameObject.GetComponent<MovementBehaviour>();
@@ -26,7 +26,7 @@ public static class TargetFinder
         var possibleTargets = new List<GameObject>();
         foreach (var actor in actors)
         {
-            if (actor.Value is not { GameActorType: GameActorType.Box }) continue;
+            if (actor.Value.GameActorType != actorType) continue;
 
             var gameObject = GetGameObject(actor.Key);
             if (gameObject != null && gameObject.activeInHierarchy)
@@ -34,6 +34,7 @@ public static class TargetFinder
                 possibleTargets.Add(gameObject);
             }
         }
+
 
         return SelectTarget(possibleTargets);
     }

@@ -3,6 +3,7 @@ using net.bigpoint.seafight.com.module.inventory;
 using Seafight;
 using Seafight.GameActors;
 using TestPlugin.Helpers;
+using TestPlugin.Map;
 using TestPlugin.UI;
 using UnityEngine;
 
@@ -34,10 +35,16 @@ public static class HarmonyPatches
 
     [HarmonyPatch(typeof(GameActorController), nameof(GameActorController.GameActorAdded))]
     [HarmonyPrefix]
-    public static void GameActorAddedPrefix(GameActorController __instance, EntityId entityId,
-        GameActorData actorData)
+    public static void GameActorAddedPrefix(GameActorController __instance, EntityId entityId, GameActorData actorData)
     {
-        // Implementation for GameActorAdded
+        var entity = HarmonyPatches.InputController.mapView.GetEntity(entityId);
+        if (entity == null)
+            return;
+
+        if (actorData.GameActorType == GameActorType.Tower)
+        {
+            MapController.CreateBlockedCoordsAroundEntity(entity.gameObject, 50);
+        }
     }
 
     [HarmonyPatch(typeof(DeathWindowBehaviour), nameof(DeathWindowBehaviour.OnOpen))]

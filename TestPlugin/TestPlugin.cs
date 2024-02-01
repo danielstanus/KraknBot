@@ -19,6 +19,8 @@ internal unsafe class TestPlugin : BasePlugin
     private GameObject TestPluginBehaviourHolder;
     private BotBehaviour _botBehaviourInstance;
 
+    public static bool Debug = true;
+
     public override void Load()
     {
         InitLog.Init(Log);

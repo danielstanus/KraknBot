@@ -36,7 +36,7 @@ public class LogWindow
         var logMessagesCopy = new List<(DateTime, string)>(logMessages);
 
         Vector2 windowPos = new Vector2(ImGui.GetIO().DisplaySize.X - 10, ImGui.GetIO().DisplaySize.Y - 10);
-        Vector2 windowSize = new Vector2(600, 400);
+        Vector2 windowSize = new Vector2(400, 300);
         ImGui.SetNextWindowPos(windowPos, ImGuiCond.FirstUseEver, new Vector2(1.0f, 1.0f));
         ImGui.SetNextWindowSize(windowSize, ImGuiCond.FirstUseEver);
 
