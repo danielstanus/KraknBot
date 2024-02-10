@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
-using TestPlugin.States;
+using KraknBot.States;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Networking;
 using IDisposable = Il2CppSystem.IDisposable;
 
-namespace TestPlugin;
+namespace KraknBot;
 
 public class BotBehaviour : MonoBehaviour
 {

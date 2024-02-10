@@ -7,7 +7,7 @@ using UniRx;
 using UnityEngine;
 using EventType = net.bigpoint.seafight.com.module.eventsystem.EventType;
 
-namespace TestPlugin.Helpers;
+namespace KraknBot.Helpers;
 
 public static class TargetFinder
 {

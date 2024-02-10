@@ -1,4 +1,4 @@
-﻿namespace TestPlugin;
+﻿namespace KraknBot;
 
 internal interface ILog
 {

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TestPlugin.Helpers
+namespace KraknBot.Helpers
 {
     public class CoroutineHandler : MonoBehaviour
     {

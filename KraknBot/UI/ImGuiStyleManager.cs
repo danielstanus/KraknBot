@@ -1,7 +1,7 @@
 using System.Numerics;
 using ImGuiNET;
 
-namespace TestPlugin.UI;
+namespace KraknBot.UI;
 
 public static class ImGuiStyleManager
 {

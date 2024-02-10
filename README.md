@@ -31,7 +31,7 @@ private static void MyUI()
         {
             if (ImGui.BeginMenu("MainBar", true))
             {
-                if (ImGui.MenuItemBool("MyTestPlugin", null, false, true))
+                if (ImGui.MenuItemBool("MyKraknBot", null, false, true))
                 {
                     _isMyUIOpen ^= true;
                 }
@@ -46,7 +46,7 @@ private static void MyUI()
         {
             if (ImGui.BeginMenu("MainBar", true))
             {
-                if (ImGui.MenuItemBool("MyTestPlugin2", null, false, true))
+                if (ImGui.MenuItemBool("MyKraknBot2", null, false, true))
                 {
                     _isMyUIOpen ^= true;
                 }

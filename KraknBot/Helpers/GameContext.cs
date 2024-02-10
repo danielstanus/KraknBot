@@ -3,7 +3,7 @@ using Seafight;
 using Seafight.GameActors;
 using UnityEngine;
 
-namespace TestPlugin.Helpers;
+namespace KraknBot.Helpers;
 
 public static class GameContext
 {

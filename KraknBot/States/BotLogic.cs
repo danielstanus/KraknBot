@@ -2,11 +2,11 @@ using Il2CppSystem.Collections.Generic;
 using Seafight;
 using Seafight.GameActors;
 using Seafight.Utilities;
-using TestPlugin.Helpers;
-using TestPlugin.UI;
+using KraknBot.Helpers;
+using KraknBot.UI;
 using UnityEngine;
 
-namespace TestPlugin.States
+namespace KraknBot.States
 {
     public class BotLogic
     {

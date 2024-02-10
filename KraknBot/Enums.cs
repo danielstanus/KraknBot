@@ -1,4 +1,4 @@
-namespace TestPlugin
+namespace KraknBot
 {
     public enum ReviveOption
     {

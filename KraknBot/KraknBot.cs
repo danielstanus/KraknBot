@@ -4,20 +4,20 @@ using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using MonoMod.RuntimeDetour;
-using TestPlugin.Helpers;
-using TestPlugin.UI;
+using KraknBot.Helpers;
+using KraknBot.UI;
 using UnityEngine;
 using UnityEngine.Networking;
 using ImGuiInjection = DearImGuiInjection.DearImGuiInjection;
 
-namespace TestPlugin;
+namespace KraknBot;
 
 [BepInDependency(DearImGuiInjection.Metadata.GUID)]
 [BepInPlugin(Metadata.GUID, Metadata.Name, Metadata.Version)]
-internal unsafe class TestPlugin : BasePlugin
+internal unsafe class KraknBot : BasePlugin
 {
     private static List<Hook> Hooks = new();
-    private GameObject TestPluginBehaviourHolder;
+    private GameObject KraknBotBehaviourHolder;
     private BotBehaviour _botBehaviourInstance;
 
     public static bool Debug = true;
@@ -34,10 +34,10 @@ internal unsafe class TestPlugin : BasePlugin
         ClassInjector.RegisterTypeInIl2Cpp<CoroutineHandler>();
         var coroutineHandler = CoroutineHandler.Instance;
 
-        TestPluginBehaviourHolder = new("TestPluginBehaviourGO");
-        GameObject.DontDestroyOnLoad(TestPluginBehaviourHolder);
-        TestPluginBehaviourHolder.hideFlags |= HideFlags.HideAndDontSave;
-        _botBehaviourInstance = TestPluginBehaviourHolder.AddComponent<BotBehaviour>();
+        KraknBotBehaviourHolder = new("KraknBotBehaviourGO");
+        GameObject.DontDestroyOnLoad(KraknBotBehaviourHolder);
+        KraknBotBehaviourHolder.hideFlags |= HideFlags.HideAndDontSave;
+        _botBehaviourInstance = KraknBotBehaviourHolder.AddComponent<BotBehaviour>();
         if (_botBehaviourInstance == null)
         {
             Log.LogInfo("Failed to add BotBehaviour component.");
@@ -50,7 +50,7 @@ internal unsafe class TestPlugin : BasePlugin
             LogWindow.AddLogMessage("BotBehaviour instance set in PluginUI.");
         }
 
-        LogWindow.AddLogMessage("TestPlugin loaded.");
+        LogWindow.AddLogMessage("KraknBot loaded.");
     }
 
     private static void BotUI()

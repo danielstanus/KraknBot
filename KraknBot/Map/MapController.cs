@@ -1,8 +1,8 @@
 using Seafight.Utilities;
-using TestPlugin.Helpers;
+using KraknBot.Helpers;
 using UnityEngine;
 
-namespace TestPlugin.Map;
+namespace KraknBot.Map;
 
 public static class MapController
 {
@@ -20,7 +20,7 @@ public static class MapController
                 if (!HarmonyPatches.InputController.mapView.isCoordBlocked(blockedPosition))
                 {
                     HarmonyPatches.InputController.mapView.currentMapBlockedCoords[blockedPosition] = true;
-                    if (TestPlugin.Debug)
+                    if (KraknBot.Debug)
                     {
                         HarmonyPatches.InputController.mapView.ShowBlockedArea(blockedPosition);
                     }

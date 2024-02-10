@@ -1,6 +1,6 @@
 using BepInEx.Logging;
 
-namespace TestPlugin;
+namespace KraknBot;
 
 internal static class InitLog
 {

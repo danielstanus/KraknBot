@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NativeMemory", "NativeMemor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortableExecutable", "PortableExecutable\PortableExecutable.csproj", "{9C89F2AD-ACC4-46D6-A64E-161C235FC623}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestPlugin", "TestPlugin\TestPlugin.csproj", "{18D848D5-14DD-4DBC-A7CF-E4815E0103E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KraknBot", "KraknBot\KraknBot.csproj", "{18D848D5-14DD-4DBC-A7CF-E4815E0103E4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EditAndContinue", "EditAndContinue\EditAndContinue.csproj", "{34DD429D-DC7B-4139-9D0B-53FB0573BB77}"
 EndProject

@@ -1,4 +1,4 @@
-namespace TestPlugin;
+namespace KraknBot;
 
 public class Singleton<T> where T : new()
 {

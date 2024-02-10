@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using ImGuiNET;
-using TestPlugin.UI;
+using KraknBot.UI;
 
-namespace TestPlugin;
+namespace KraknBot;
 
 public class LogWindow
 {

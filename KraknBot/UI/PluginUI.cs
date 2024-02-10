@@ -4,11 +4,11 @@ using ImGuiNET;
 using net.bigpoint.seafight.com.module.inventory;
 using Seafight;
 using Seafight.GameActors;
-using TestPlugin.Helpers;
+using KraknBot.Helpers;
 using UnityEngine;
 using ImGuiInjection = DearImGuiInjection.DearImGuiInjection;
 
-namespace TestPlugin.UI;
+namespace KraknBot.UI;
 
 public class PluginUI
 {
@@ -41,7 +41,7 @@ public class PluginUI
         if (ImGuiInjection.IsCursorVisible)
         {
             var windowOpen = true;
-            if (ImGui.Begin("TestPlugin UI", ref windowOpen, (int)ImGuiWindowFlags.None))
+            if (ImGui.Begin("KraknBot UI", ref windowOpen, (int)ImGuiWindowFlags.None))
             {
                 ImGui.Text("Bot Options");
 

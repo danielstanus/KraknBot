@@ -4,13 +4,13 @@ using net.bigpoint.seafight.com.module.inventory;
 using Seafight;
 using Seafight.GameActors;
 using Seafight.Utilities;
-using TestPlugin.Helpers;
-using TestPlugin.Map;
-using TestPlugin.UI;
+using KraknBot.Helpers;
+using KraknBot.Map;
+using KraknBot.UI;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace TestPlugin;
+namespace KraknBot;
 
 public static class HarmonyPatches
 {
