@@ -33,9 +33,15 @@ public class PluginUI
 
     private void InternalRenderUI()
     {
-        System.Numerics.Vector2 windowPos = new System.Numerics.Vector2(10, 10);
-        System.Numerics.Vector2 windowSize = new System.Numerics.Vector2(400, 300);
-        ImGui.SetNextWindowPos(windowPos, ImGuiCond.FirstUseEver, new System.Numerics.Vector2(1.0f, 1.0f));
+        // Get screen dimensions
+        float screenWidth = UnityEngine.Screen.width;
+        float screenHeight = UnityEngine.Screen.height;
+
+        // Calculate desired window position (for example, centering the window)
+        System.Numerics.Vector2 windowPos = new System.Numerics.Vector2(screenWidth / 2 - 200, screenHeight / 2 - 150); // Adjusted to center the window based on its size
+
+        System.Numerics.Vector2 windowSize = new System.Numerics.Vector2(400, 300); // Window size remains the same
+        ImGui.SetNextWindowPos(windowPos, ImGuiCond.FirstUseEver, new System.Numerics.Vector2(0.5f, 0.5f)); // Updated to position the window based on the calculated position
         ImGui.SetNextWindowSize(windowSize, ImGuiCond.FirstUseEver);
 
         if (ImGuiInjection.IsCursorVisible)
