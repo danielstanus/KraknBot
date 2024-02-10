@@ -1,14 +1,23 @@
-using UnityEngine;
-using UniRx;
 using System;
-using TestPlugin;
+using System.Collections;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using TestPlugin.States;
+using UniRx;
+using UnityEngine;
+using UnityEngine.Networking;
 using IDisposable = Il2CppSystem.IDisposable;
+
+namespace TestPlugin;
 
 public class BotBehaviour : MonoBehaviour
 {
     private readonly BotLogic _botLogic = new BotLogic();
     private IDisposable _lazyUpdateSubscription;
+
+    void Awake()
+    {
+        StartCoroutine(CheckVersionCoroutine().WrapToIl2Cpp());
+    }
 
     public void StartCollector()
     {
@@ -34,5 +43,28 @@ public class BotBehaviour : MonoBehaviour
     private void Update()
     {
         // Implement update logic here
+    }
+
+    private IEnumerator CheckVersionCoroutine()
+    {
+        string versionCheckUrl = "https://abcdh.dev/version";
+        UnityWebRequest webRequest = UnityWebRequest.Get(versionCheckUrl);
+        yield return webRequest.SendWebRequest();
+        if (webRequest.result != UnityWebRequest.Result.Success)
+        {
+            Log.Info("Error checking version: " + webRequest.error);
+        }
+        else
+        {
+            string latestVersion = webRequest.downloadHandler.text;
+            if (latestVersion != Metadata.Version)
+            {
+                Log.Info($"An update is available for the plugin. Current version: {Metadata.Version}, Latest version: {latestVersion}");
+            }
+            else
+            {
+                Log.Info("Plugin is up to date.");
+            }
+        }
     }
 }

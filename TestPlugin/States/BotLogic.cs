@@ -13,7 +13,22 @@ namespace TestPlugin.States
         private bool _running = false;
         private GameObject _boxTarget;
         private GameObject _npcTarget;
-        private MovementBehaviour _movementBehaviour;
+        private Vector3[] _areaTargets = new Vector3[4];
+        private int _currentAreaIndex = 0;
+
+        public BotLogic()
+        {
+            InitializeAreaTargets();
+        }
+
+        private void InitializeAreaTargets()
+        {
+            // Define corners within the map boundaries, slightly adjusted to be "close to corners"
+            _areaTargets[0] = new Vector3(10, -73, 0); // Bottom left
+            _areaTargets[1] = new Vector3(110, -73, 0); // Bottom right
+            _areaTargets[2] = new Vector3(110, -10, 0); // Top right
+            _areaTargets[3] = new Vector3(10, -10, 0); // Top left
+        }
 
         public void Update()
         {
@@ -30,7 +45,7 @@ namespace TestPlugin.States
                 {
                     HarmonyPatches.InputController.attackSystem.Attack();
                 }
-                else if (_movementBehaviour.IsMoving)
+                else if (GameContext.PlayerMovementBehaviour.IsMoving)
                 {
                     Log.Info("Player is moving");
                     return;
@@ -42,7 +57,7 @@ namespace TestPlugin.States
             }
             else if (_boxTarget != null && PluginUI.CollectBoxes)
             {
-                if (_movementBehaviour.IsMoving)
+                if (GameContext.PlayerMovementBehaviour.IsMoving)
                 {
                     Log.Info("Player is moving");
                 }
@@ -53,9 +68,9 @@ namespace TestPlugin.States
             }
             else
             {
-                if (!_movementBehaviour.IsMoving)
+                if (!GameContext.PlayerMovementBehaviour.IsMoving)
                 {
-                    MoveEntityToRandomUnblockedTile(40, 20);
+                    MoveEntityToNextArea();
                 }
             }
         }
@@ -93,7 +108,6 @@ namespace TestPlugin.States
             var player = HarmonyPatches.InputController.mapView.GetEntity(entityId);
             var playerObject = player.gameObject;
 
-            _movementBehaviour ??= playerObject.GetComponent<MovementBehaviour>();
             _running = true;
         }
 
@@ -101,7 +115,6 @@ namespace TestPlugin.States
         {
             this._running = false;
             this._boxTarget = null;
-            this._movementBehaviour = null;
         }
 
         private void MoveToTarget()
@@ -123,23 +136,27 @@ namespace TestPlugin.States
             return target != null && target.activeInHierarchy;
         }
 
-        private void MoveEntityToRandomUnblockedTile(int moveRange, int minDistanceFromPlayer)
+        private void MoveEntityToNextArea()
         {
-            Vector3 entityPosition = GameContext.PlayerGameObject.transform.position;
-            Vector2Int entityMapField = MapUtils.GetMapField(entityPosition);
+            // Get the next area to move towards in a circular manner
+            Vector3 targetArea = _areaTargets[_currentAreaIndex];
+            _currentAreaIndex = (_currentAreaIndex + 1) % _areaTargets.Length; // Cycle through the areas
 
-            var potentialPositions = new System.Collections.Generic.List<Vector2Int>();
-            for (int x = -moveRange; x <= moveRange; x++)
+            // Initialize a list to hold potential unblocked positions
+            var potentialPositions = new System.Collections.Generic.List<Vector3>();
+
+            // Define the range of random positions around the target area to check for unblocked positions
+            int range = 5; // Range of positions around the target area to consider
+
+            for (int x = -range; x <= range; x++)
             {
-                for (int y = -moveRange; y <= moveRange; y++)
+                for (int y = -range; y <= range; y++)
                 {
-                    Vector2Int newPosition = new Vector2Int();
-                    newPosition.Set(entityMapField.x + x, entityMapField.y + y);
+                    Vector3 newPosition = new Vector3(targetArea.x + x, targetArea.y + y, 0);
 
-                    // Calculate distance from the current entity position to the new position
-                    int distanceFromPlayer = Mathf.Max(Mathf.Abs(x), Mathf.Abs(y)); // Using Chebyshev distance for simplicity
-
-                    if (!HarmonyPatches.InputController.mapView.isCoordBlocked(newPosition) && distanceFromPlayer >= minDistanceFromPlayer)
+                    // Convert the world position to map field coordinates to check if it's blocked
+                    Vector2Int mapField = MapUtils.GetMapField(newPosition);
+                    if (!HarmonyPatches.InputController.mapView.isCoordBlocked(mapField))
                     {
                         potentialPositions.Add(newPosition);
                     }
@@ -148,16 +165,17 @@ namespace TestPlugin.States
 
             if (potentialPositions.Count > 0)
             {
-                var randomPosition = potentialPositions[UnityEngine.Random.Range(0, potentialPositions.Count)];
-                Vector3 targetPosition = MapUtils.GetWorldPoint(randomPosition);
-                HarmonyPatches.InputController.OnClickOnMap(targetPosition); // Ensure this method is accessible or indirectly triggered
+                // Select a random unblocked position from the list of potential positions
+                Vector3 randomPositionWithinArea = potentialPositions[UnityEngine.Random.Range(0, potentialPositions.Count)];
 
-                Log.Info("Moving to random unblocked tile: " + randomPosition.x + ", " + randomPosition.y);
+                HarmonyPatches.InputController.OnClickOnMap(randomPositionWithinArea);
+                Log.Info($"Moving to unblocked area: {randomPositionWithinArea.x}, {randomPositionWithinArea.y}");
             }
             else
             {
-                Log.Info("No unblocked tile available to move to at the desired distance.");
+                Log.Info("No unblocked area found within the target vicinity.");
             }
         }
+
     }
 }

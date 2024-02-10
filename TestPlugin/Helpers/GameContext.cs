@@ -1,5 +1,6 @@
 using net.bigpoint.seafight.com.module.inventory;
 using Seafight;
+using Seafight.GameActors;
 using UnityEngine;
 
 namespace TestPlugin.Helpers;
@@ -7,6 +8,8 @@ namespace TestPlugin.Helpers;
 public static class GameContext
 {
     private static GameObject _playerGameObject;
+    private static MovementBehaviour _movementBehaviour;
+
 
     public static GameObject PlayerGameObject
     {
@@ -22,9 +25,24 @@ public static class GameContext
         }
     }
 
+    public static MovementBehaviour PlayerMovementBehaviour
+    {
+        get
+        {
+            if (_movementBehaviour != null && !_movementBehaviour.Equals(null)) return _movementBehaviour;
+
+            var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
+            var playerEntity = HarmonyPatches.InputController.mapView.GetEntity(entityId);
+            _playerGameObject = playerEntity != null ? playerEntity.gameObject : null;
+            if (_playerGameObject != null) _movementBehaviour = _playerGameObject.GetComponent<MovementBehaviour>();
+            return _movementBehaviour;
+        }
+    }
+
     public static void ResetContext()
     {
         _playerGameObject = null;
+        _movementBehaviour = null;
     }
 
     public static void GetCannonballAmount(InventorySystem inventorySystem, InventoryItemType cannonballType)

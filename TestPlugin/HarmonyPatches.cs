@@ -1,11 +1,14 @@
+using System;
 using HarmonyLib;
 using net.bigpoint.seafight.com.module.inventory;
 using Seafight;
 using Seafight.GameActors;
+using Seafight.Utilities;
 using TestPlugin.Helpers;
 using TestPlugin.Map;
 using TestPlugin.UI;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace TestPlugin;
 
@@ -33,17 +36,30 @@ public static class HarmonyPatches
         InputController = __instance;
     }
 
+    [HarmonyPatch(typeof(InputController), nameof(InputController.OnClickOnMap))]
+    [HarmonyPrefix]
+    public static void OnClickOnMapPrefix(InputController __instance, Vector3 inputPosition)
+    {
+        Log.Info($"Clicked on map at {inputPosition.x}, {inputPosition.y}, {inputPosition.z}, Tile: {MapUtils.GetMapField(inputPosition).x}, {MapUtils.GetMapField(inputPosition).y}");
+    }
+
     [HarmonyPatch(typeof(GameActorController), nameof(GameActorController.GameActorAdded))]
     [HarmonyPrefix]
     public static void GameActorAddedPrefix(GameActorController __instance, EntityId entityId, GameActorData actorData)
     {
-        var entity = HarmonyPatches.InputController.mapView.GetEntity(entityId);
+        var entity = InputController.mapView.GetEntity(entityId);
         if (entity == null)
             return;
 
         if (actorData.GameActorType == GameActorType.Tower)
         {
             MapController.CreateBlockedCoordsAroundEntity(entity.gameObject, 50);
+        }
+
+        var userId = InputController.gameActorModel.playerInfoSystem.UserId;
+        if (entityId == userId)
+        {
+            GameContext.ResetContext();
         }
     }
 
@@ -53,7 +69,7 @@ public static class HarmonyPatches
     {
         InventorySystem inventorySystem = MainInstaller.Inject<InventorySystem>();
 
-        System.Action reviveAction = () =>
+        Action reviveAction = () =>
         {
             // Check the selected revive option from the PluginUI
             ReviveOption selectedOption = PluginUI.SelectedReviveOption;
