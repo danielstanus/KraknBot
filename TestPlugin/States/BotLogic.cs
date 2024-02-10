@@ -16,6 +16,8 @@ namespace TestPlugin.States
         private Vector3[] _areaTargets = new Vector3[4];
         private int _currentAreaIndex = 0;
 
+        public bool Running => _running;
+
         public BotLogic()
         {
             InitializeAreaTargets();
@@ -143,39 +145,26 @@ namespace TestPlugin.States
             _currentAreaIndex = (_currentAreaIndex + 1) % _areaTargets.Length; // Cycle through the areas
 
             // Initialize a list to hold potential unblocked positions
-            var potentialPositions = new System.Collections.Generic.List<Vector3>();
+            var potentialPosition = new Vector3();
 
-            // Define the range of random positions around the target area to check for unblocked positions
-            int range = 5; // Range of positions around the target area to consider
-
-            for (int x = -range; x <= range; x++)
+            do
             {
-                for (int y = -range; y <= range; y++)
+                var x = Random.Range(0, 60);
+                var y = Random.Range(0, -44);
+                Vector3 newPosition = new Vector3(targetArea.x + x, targetArea.y + y, 0);
+
+                // Convert the world position to map field coordinates to check if it's blocked
+                Vector2Int mapField = MapUtils.GetMapField(newPosition);
+                Log.Info("Trying to find new random position");
+                if (!HarmonyPatches.InputController.mapView.isCoordBlocked(mapField))
                 {
-                    Vector3 newPosition = new Vector3(targetArea.x + x, targetArea.y + y, 0);
-
-                    // Convert the world position to map field coordinates to check if it's blocked
-                    Vector2Int mapField = MapUtils.GetMapField(newPosition);
-                    if (!HarmonyPatches.InputController.mapView.isCoordBlocked(mapField))
-                    {
-                        potentialPositions.Add(newPosition);
-                    }
+                    Log.Info("Found new random position");
+                    potentialPosition = newPosition;
                 }
-            }
+            } while (potentialPosition == Vector3.zero);
 
-            if (potentialPositions.Count > 0)
-            {
-                // Select a random unblocked position from the list of potential positions
-                Vector3 randomPositionWithinArea = potentialPositions[UnityEngine.Random.Range(0, potentialPositions.Count)];
-
-                HarmonyPatches.InputController.OnClickOnMap(randomPositionWithinArea);
-                Log.Info($"Moving to unblocked area: {randomPositionWithinArea.x}, {randomPositionWithinArea.y}");
-            }
-            else
-            {
-                Log.Info("No unblocked area found within the target vicinity.");
-            }
+            HarmonyPatches.InputController.OnClickOnMap(potentialPosition);
+            Log.Info($"Moving to unblocked area: {potentialPosition.x}, {potentialPosition.y}");
         }
-
     }
 }

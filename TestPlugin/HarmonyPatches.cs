@@ -67,6 +67,12 @@ public static class HarmonyPatches
     [HarmonyPostfix]
     public static void OnOpenPostfix(DeathWindowBehaviour __instance)
     {
+        // Check if the bot is running
+        if (!BotBehaviour.Instance?.Running ?? true)
+        {
+            return; // Bot is not running, exit the method
+        }
+
         InventorySystem inventorySystem = MainInstaller.Inject<InventorySystem>();
 
         Action reviveAction = () =>

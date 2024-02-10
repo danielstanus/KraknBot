@@ -11,11 +11,14 @@ namespace TestPlugin;
 
 public class BotBehaviour : MonoBehaviour
 {
-    private readonly BotLogic _botLogic = new BotLogic();
+    private readonly BotLogic _botLogic = new();
     private IDisposable _lazyUpdateSubscription;
+
+    public static BotLogic Instance { get; private set; }
 
     void Awake()
     {
+        Instance = _botLogic;
         StartCoroutine(CheckVersionCoroutine().WrapToIl2Cpp());
     }
 
