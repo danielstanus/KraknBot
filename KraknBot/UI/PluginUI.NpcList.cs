@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Il2CppInterop.Runtime;
 using ImGuiNET;
 using net.bigpoint.seafight.com.module.inventory;
@@ -17,10 +18,6 @@ public partial class PluginUI
 {
     private void RenderNPCOptions()
     {
-        // Assume GetAmmoOptions returns a list of ammo names
-        string[] ammoOptions = [];
-        DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() => { ammoOptions = GetAmmoOptions(); });
-
         if (ImGui.BeginTable("NPCs", 4))
         {
             ImGui.TableSetupColumn("Active");
@@ -45,6 +42,9 @@ public partial class PluginUI
 
                 ImGui.TableNextColumn();
                 ImGui.SetNextItemWidth(150.0f);
+                var ammoOptions = GameContext.CurrentAmmunitionList
+                    .Select(a => $"{a.Name} (ID: {a.Id}, Amount: {a.Amount})")
+                    .ToArray();
                 string ammoOptionsCombined = string.Join('\0', ammoOptions) + '\0';
                 int tempAmmoIndex = npcItems[i].AmmoIndex; // Temporary variable
                 if (ImGui.Combo($"##ammo{i}", ref tempAmmoIndex, ammoOptionsCombined, ammoOptions.Length))
