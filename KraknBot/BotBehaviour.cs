@@ -15,6 +15,7 @@ public class BotBehaviour : MonoBehaviour
     private IDisposable _lazyUpdateSubscription;
 
     public static BotLogic Instance { get; private set; }
+    public static bool isUpToDate = false;
 
     void Awake()
     {
@@ -66,6 +67,7 @@ public class BotBehaviour : MonoBehaviour
             }
             else
             {
+                isUpToDate = true;
                 Log.Info("Plugin is up to date.");
             }
         }

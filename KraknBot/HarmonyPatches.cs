@@ -51,10 +51,10 @@ public static class HarmonyPatches
         if (entity == null)
             return;
 
-        if (actorData.GameActorType == GameActorType.Tower)
-        {
-            MapController.CreateBlockedCoordsAroundEntity(entity.gameObject, 50);
-        }
+        // if (actorData.GameActorType == GameActorType.Tower)
+        // {
+        //     MapController.CreateBlockedCoordsAroundEntity(entity.gameObject, 50);
+        // }
 
         var userId = InputController.gameActorModel.playerInfoSystem.UserId;
         if (entityId == userId)

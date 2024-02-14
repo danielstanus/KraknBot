@@ -1,10 +1,16 @@
+using CakeBox;
+using Il2CppInterop.Runtime;
+using Il2CppSystem;
 using Il2CppSystem.Collections.Generic;
+using Il2CppSystem.Reflection;
 using Seafight;
 using Seafight.GameActors;
 using Seafight.Utilities;
 using KraknBot.Helpers;
 using KraknBot.UI;
+using net.bigpoint.seafight.com.module.ship;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace KraknBot.States
 {
@@ -26,10 +32,10 @@ namespace KraknBot.States
         private void InitializeAreaTargets()
         {
             // Define corners within the map boundaries, slightly adjusted to be "close to corners"
-            _areaTargets[0] = new Vector3(10, -73, 0); // Bottom left
-            _areaTargets[1] = new Vector3(110, -73, 0); // Bottom right
-            _areaTargets[2] = new Vector3(110, -10, 0); // Top right
-            _areaTargets[3] = new Vector3(10, -10, 0); // Top left
+            _areaTargets[0] = new Vector3(0, 0, 0); // First quarter
+            _areaTargets[1] = new Vector3(60, 0, 0); // Second quarter
+            _areaTargets[2] = new Vector3(0, -44, 0); // Third quarter
+            _areaTargets[3] = new Vector3(60, -44, 0); // Fourth quarter
         }
 
         public void Update()
@@ -38,6 +44,8 @@ namespace KraknBot.States
                 return;
 
             SetTargets();
+
+            if (!HandleRepair()) return;
 
             if (_npcTarget != null && PluginUI.ShootNPC)
             {
@@ -77,6 +85,35 @@ namespace KraknBot.States
             }
         }
 
+        private bool HandleRepair()
+        {
+            var playerInfo = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.OwnPlayer;
+            var repairData = playerInfo.components[Il2CppType.Of<GameActorRepairData>()].Cast<GameActorRepairData>();
+            var attacking = HarmonyPatches.InputController.attackSystem.IsAttackInProgress();
+            if (repairData.isRepairing || attacking) return false;
+
+            float currentHealth = (float)GameContext.PlayerHealthBehaviour.currentDictionary[(AmsAttributeType.HITPOINTS)];
+            float maxHealth = (float)GameContext.PlayerHealthBehaviour.permanentDictionary[(AmsAttributeType.HITPOINTS)];
+            if (currentHealth < maxHealth * (PluginUI.RepairThreshold / 100f))
+            {
+                InitiateRepair();
+                return false;
+            }
+
+            return true;
+        }
+
+        private void InitiateRepair()
+        {
+            Log.Info($"Health below threshold. Initiating repair.");
+            var actionMenuShip = GameObject.Find("ActionMenuShip_Default");
+            if (actionMenuShip != null)
+            {
+                var actionMenuPanel = actionMenuShip.GetComponent<ActionMenuPanel>();
+                actionMenuPanel.OnRepairEvent();
+            }
+        }
+
         private void SetTargets()
         {
             if (PluginUI.ShootNPC)
@@ -87,6 +124,21 @@ namespace KraknBot.States
                     if (_npcTarget == null)
                     {
                         Log.Info("No more NPCs to shoot");
+                    }
+                }
+                else
+                {
+                    Log.Info("Current NPC target: " + _npcTarget.name);
+                    var actors = HarmonyPatches.InputController.gameActorModel.Actors;
+                    // var npcEntity = _npcTarget.GetComponent<GameActorBehaviour>().EntityId;
+                    foreach (var a in actors)
+                    {
+                        if (a.Key == _npcTarget.GetComponent<GameActorBehaviour>().EntityId)
+                        {
+                            Log.Info("Target found in actors list");
+                            Log.Info("NPC data: " + a.Value.components[Il2CppType.Of<NpcData>()].Cast<NpcData>().NpcId);
+
+                        }
                     }
                 }
             }

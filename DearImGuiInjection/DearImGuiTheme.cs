@@ -109,10 +109,10 @@ public static class DearImGuiTheme
         ImGui.GetIO().Fonts.Clear();
         ImFontConfig* config = ImGuiNative.ImFontConfig_ImFontConfig();
         config->MergeMode = 0;
-        ImGui.GetIO().Fonts.AddFontFromFileTTF(ChineseSimplifiedCommonFontPath, 15.0f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseFull());
+        ImGui.GetIO().Fonts.AddFontFromFileTTF(ChineseSimplifiedCommonFontPath, 32.0f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseFull());
         config->MergeMode = 1;
-        ImGui.GetIO().Fonts.AddFontFromFileTTF(ChineseFullFontPath, 15.0f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseFull());
-        ImGui.GetIO().Fonts.AddFontFromFileTTF(JapaneseFontPath, 15.0f, config, ImGui.GetIO().Fonts.GetGlyphRangesJapanese());
+        ImGui.GetIO().Fonts.AddFontFromFileTTF(ChineseFullFontPath, 32.0f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseFull());
+        ImGui.GetIO().Fonts.AddFontFromFileTTF(JapaneseFontPath, 32.0f, config, ImGui.GetIO().Fonts.GetGlyphRangesJapanese());
         ImGui.GetIO().Fonts.Build();
     }
 }

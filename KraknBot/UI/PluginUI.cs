@@ -1,135 +1,179 @@
 using System;
+using System.Collections.Generic;
 using Il2CppInterop.Runtime;
 using ImGuiNET;
 using net.bigpoint.seafight.com.module.inventory;
 using Seafight;
 using Seafight.GameActors;
 using KraknBot.Helpers;
+using KraknBot.Models;
 using UnityEngine;
 using ImGuiInjection = DearImGuiInjection.DearImGuiInjection;
 
 namespace KraknBot.UI;
 
-public class PluginUI
+public partial class PluginUI
 {
+    private static readonly PluginUI instance = new PluginUI();
+    public static PluginUI Instance => instance;
+
     private byte[] bufferInputText = new byte[40];
-    private static PluginUI Instance => Singleton<PluginUI>.Instance;
     public static BotBehaviour BotBehaviourInstance { get; set; }
 
     public static bool CollectBoxes { get; set; }
     public static bool ShootNPC { get; set; }
+    public static int RepairThreshold { get; set; } = 50;
+
+    public static ReviveOption SelectedReviveOption { get; private set; } = ReviveOption.Emergency;
 
     private bool isBotRunning = false;
     private bool collectBoxes = false;
     private bool shootNPC = false;
+    private int currentTab = 0; // 0 for Bot Options, 1 for Other Options
 
-    private string reviveOptions = "Emergency\0Standard\0";
-    public static ReviveOption SelectedReviveOption { get; private set; } = ReviveOption.Emergency;
+    private List<NPCItem> npcItems = [];
+    private string newItemName = "";
+    private int selectedAmmoIndex = 0;
 
     public static void RenderUI()
     {
-        Instance.InternalRenderUI();
+        instance.InternalRenderUI();
     }
 
     private void InternalRenderUI()
     {
-        // Get screen dimensions
-        float screenWidth = UnityEngine.Screen.width;
-        float screenHeight = UnityEngine.Screen.height;
-
-        // Calculate desired window position (for example, centering the window)
-        System.Numerics.Vector2 windowPos = new System.Numerics.Vector2(screenWidth / 2 - 200, screenHeight / 2 - 150); // Adjusted to center the window based on its size
-
-        System.Numerics.Vector2 windowSize = new System.Numerics.Vector2(400, 300); // Window size remains the same
-        ImGui.SetNextWindowPos(windowPos, ImGuiCond.FirstUseEver, new System.Numerics.Vector2(0.5f, 0.5f)); // Updated to position the window based on the calculated position
-        ImGui.SetNextWindowSize(windowSize, ImGuiCond.FirstUseEver);
+        SetupWindow();
 
         if (ImGuiInjection.IsCursorVisible)
         {
             var windowOpen = true;
-            if (ImGui.Begin("KraknBot UI", ref windowOpen, (int)ImGuiWindowFlags.None))
+            if (ImGui.Begin("KraknBot UI", ref windowOpen, ImGuiWindowFlags.None))
             {
-                ImGui.Text("Bot Options");
-
-                // Toggle button for starting/stopping the bot
-                if (ImGui.Button(isBotRunning ? "Stop Bot" : "Start Bot"))
+                // Check if BotBehaviour is up to date before rendering the UI
+                if (BotBehaviourInstance != null && !BotBehaviour.isUpToDate)
                 {
-                    isBotRunning = !isBotRunning;
-                    LogWindow.AddLogMessage(isBotRunning ? "Bot started" : "Bot stopped");
-
-                    DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
+                    // If the BotBehaviour is not up to date, display a message instead of the UI
+                    ImGui.TextColored(new System.Numerics.Vector4(1, 0, 0, 1), "Plugin update required!");
+                    ImGui.Text("Please update the plugin to the latest version.");
+                }
+                else
+                {
+                    // If BotBehaviour is up to date, render the UI as normal
+                    RenderTabs();
+                    switch (currentTab)
                     {
-                        if (isBotRunning)
-                        {
-                            BotBehaviourInstance.StartCollector(); // Assuming this starts the bot
-                            Log.Info("Bot started");
-                        }
-                        else
-                        {
-                            BotBehaviourInstance.StopCollector(); // Assuming this stops the bot
-                            Log.Info("Bot stopped");
-                        }
-                    });
-                }
-
-                if (isBotRunning)
-                {
-                    ImGui.BeginDisabled();
-                }
-
-                if (ImGui.Checkbox("Collect Boxes", ref collectBoxes))
-                {
-                    LogWindow.AddLogMessage(collectBoxes ? "Collect Boxes enabled" : "Collect Boxes disabled");
-                    CollectBoxes = collectBoxes;
-                }
-
-                // if (ImGui.Checkbox("Collect Boxes", ref collectBoxes))
-                // {
-                //     LogWindow.AddLogMessage(collectBoxes ? "Collect Boxes enabled" : "Collect Boxes disabled");
-                //     // Additional logic for collecting boxes can be added here
-                //     // List all components of Player
-                //     var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
-                //     var player = HarmonyPatches.InputController.mapView.GetEntity(entityId);
-                //     var playerObject = player.gameObject;
-                //     Log.Info($"Component: {playerObject.name}");
-                //     Log.Info($"Component: {playerObject.GetIl2CppType().Name}");
-                //     var movementBehaviour = playerObject.GetComponent<MovementBehaviour>();
-                //     Log.Info($"Component: {movementBehaviour.name}");
-                //     Log.Info($"Component: {movementBehaviour.IsMoving}");
-                //     Log.Info($"Component: {movementBehaviour.isMoving}");
-                //
-                //     DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
-                //     {
-                //         Log.Info($"///////////////////////////////////////////////");
-                //         Log.Info($"All cannonballs:");
-                //         InventorySystem inventorySystem = MainInstaller.Inject<InventorySystem>();
-                //         GameContext.GetCannonballAmount(inventorySystem, InventoryItemType.BALLS);
-                //         Log.Info($"///////////////////////////////////////////////");
-                //     });
-                // }
-
-                if (ImGui.Checkbox("Shoot NPC", ref shootNPC))
-                {
-                    LogWindow.AddLogMessage(shootNPC ? "Shoot NPC enabled" : "Shoot NPC disabled");
-                    ShootNPC = shootNPC;
-                }
-
-                ImGui.Text("Revive Options");
-                string reviveOptionsCombo = "Emergency\0Standard\0";
-
-                int selectedOptionIndex = (int)SelectedReviveOption;
-                if (ImGui.Combo("Revive Type", ref selectedOptionIndex, reviveOptionsCombo))
-                {
-                    SelectedReviveOption = (ReviveOption)selectedOptionIndex;
-                    LogWindow.AddLogMessage($"Selected Revive Option: {SelectedReviveOption}");
-                }
-
-                if (isBotRunning)
-                {
-                    ImGui.EndDisabled();
+                        case 0:
+                            RenderBotOptions();
+                            break;
+                        case 1:
+                            RenderNPCOptions();
+                            break;
+                        case 2:
+                            RenderOtherOptions();
+                            break;
+                    }
                 }
             }
+
             ImGui.End();
         }
+    }
+
+
+    private void SetupWindow()
+    {
+        var windowPos = new System.Numerics.Vector2(Screen.width / 2 - 200, Screen.height / 2 - 150);
+        var windowSize = new System.Numerics.Vector2(400, 300);
+
+        ImGui.SetNextWindowPos(windowPos, ImGuiCond.FirstUseEver, new System.Numerics.Vector2(0.5f, 0.5f));
+        ImGui.SetNextWindowSize(windowSize, ImGuiCond.FirstUseEver);
+    }
+
+    private void RenderBotOptions()
+    {
+        ImGui.Text("Bot Options");
+        RenderCollectBoxesOption();
+        RenderShootNPCOption();
+        RenderReviveOptions();
+        RenderRepairTreshold();
+    }
+
+    private void RenderOtherOptions()
+    {
+        ImGui.Text("Other Options - Coming soon");
+        // Implement other options UI elements here
+    }
+
+    private void ToggleBotRunningState()
+    {
+        isBotRunning = !isBotRunning;
+        LogWindow.AddLogMessage(isBotRunning ? "Bot started" : "Bot stopped");
+
+        DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
+        {
+            if (isBotRunning)
+            {
+                BotBehaviourInstance.StartCollector();
+                Log.Info("Bot started");
+            }
+            else
+            {
+                BotBehaviourInstance.StopCollector();
+                Log.Info("Bot stopped");
+            }
+        });
+    }
+
+    private void RenderCollectBoxesOption()
+    {
+        if (isBotRunning) ImGui.BeginDisabled();
+        if (ImGui.Checkbox("Collect Boxes", ref collectBoxes))
+        {
+            CollectBoxes = collectBoxes;
+            LogWindow.AddLogMessage(collectBoxes ? "Collect Boxes enabled" : "Collect Boxes disabled");
+        }
+
+        if (isBotRunning) ImGui.EndDisabled();
+    }
+
+    private void RenderShootNPCOption()
+    {
+        if (isBotRunning) ImGui.BeginDisabled();
+        if (ImGui.Checkbox("Shoot NPC", ref shootNPC))
+        {
+            ShootNPC = shootNPC;
+            LogWindow.AddLogMessage(shootNPC ? "Shoot NPC enabled" : "Shoot NPC disabled");
+        }
+
+        if (isBotRunning) ImGui.EndDisabled();
+    }
+
+    private void RenderReviveOptions()
+    {
+        if (isBotRunning) ImGui.BeginDisabled();
+        ImGui.Text("Revive Options");
+        int selectedOptionIndex = (int)SelectedReviveOption;
+        string reviveOptionsCombo = "Emergency\0Standard\0";
+        if (ImGui.Combo("Revive Type", ref selectedOptionIndex, reviveOptionsCombo))
+        {
+            SelectedReviveOption = (ReviveOption)selectedOptionIndex;
+            LogWindow.AddLogMessage($"Selected Revive Option: {SelectedReviveOption}");
+        }
+
+        if (isBotRunning) ImGui.EndDisabled();
+    }
+
+    private void RenderRepairTreshold()
+    {
+        if (isBotRunning) ImGui.BeginDisabled();
+        ImGui.Text("Repair Treshold");
+        int tempRepairThreshold = RepairThreshold;
+        if (ImGui.SliderInt("##RepairThreshold", ref tempRepairThreshold, 0, 100, $"{tempRepairThreshold}%"))
+        {
+            RepairThreshold = tempRepairThreshold; // Update the property with the temporary variable's value
+            LogWindow.AddLogMessage($"Repair Threshold set to: {RepairThreshold}%");
+        }
+
+        if (isBotRunning) ImGui.EndDisabled();
     }
 }

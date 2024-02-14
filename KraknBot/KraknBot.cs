@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
@@ -8,6 +9,7 @@ using KraknBot.Helpers;
 using KraknBot.UI;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using ImGuiInjection = DearImGuiInjection.DearImGuiInjection;
 
 namespace KraknBot;
@@ -58,6 +60,4 @@ internal unsafe class KraknBot : BasePlugin
         PluginUI.RenderUI();
         LogWindow.Render();
     }
-
-
 }

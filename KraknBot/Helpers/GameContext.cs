@@ -9,7 +9,7 @@ public static class GameContext
 {
     private static GameObject _playerGameObject;
     private static MovementBehaviour _movementBehaviour;
-
+    private static HealthBehaviour _healthBehaviour;
 
     public static GameObject PlayerGameObject
     {
@@ -39,10 +39,47 @@ public static class GameContext
         }
     }
 
+    public static HealthBehaviour PlayerHealthBehaviour
+    {
+        get
+        {
+            if (_healthBehaviour != null && !_healthBehaviour.Equals(null)) return _healthBehaviour;
+
+            var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
+            var playerEntity = HarmonyPatches.InputController.mapView.GetEntity(entityId);
+            _playerGameObject = playerEntity != null ? playerEntity.gameObject : null;
+            if (_playerGameObject != null) _healthBehaviour = _playerGameObject.GetComponent<HealthBehaviour>();
+            return _healthBehaviour;
+        }
+    }
+
     public static void ResetContext()
     {
         _playerGameObject = null;
         _movementBehaviour = null;
+        _healthBehaviour = null;
+    }
+
+    public static void foo()
+    {
+        var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
+        var player = HarmonyPatches.InputController.mapView.GetEntity(entityId);
+        var playerObject = player.gameObject;
+        Log.Info($"Component: {playerObject.name}");
+        Log.Info($"Component: {playerObject.GetIl2CppType().Name}");
+        var movementBehaviour = playerObject.GetComponent<MovementBehaviour>();
+        Log.Info($"Component: {movementBehaviour.name}");
+        Log.Info($"Component: {movementBehaviour.IsMoving}");
+        Log.Info($"Component: {movementBehaviour.isMoving}");
+
+        DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
+        {
+            Log.Info($"///////////////////////////////////////////////");
+            Log.Info($"All cannonballs:");
+            InventorySystem inventorySystem = MainInstaller.Inject<InventorySystem>();
+            GameContext.GetCannonballAmount(inventorySystem, InventoryItemType.BALLS);
+            Log.Info($"///////////////////////////////////////////////");
+        });
     }
 
     public static void GetCannonballAmount(InventorySystem inventorySystem, InventoryItemType cannonballType)
@@ -60,7 +97,7 @@ public static class GameContext
                     long cannonballAmount = cannonball.Value;
 
                     // Log the cannonball ID and its amount
-                    Log.Info("Cannonball ID: " + cannonballId + ", Amount: " + cannonballAmount);
+                    Log.Info("Cannonball ID: " + cannonballId + ", Amount: " + cannonballAmount + " Cannonball name: " );
                 }
             }
         }
