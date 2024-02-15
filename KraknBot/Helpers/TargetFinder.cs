@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
+using Il2CppInterop.Runtime;
 using net.bigpoint.seafight.com.module.inventory;
 using net.bigpoint.seafight.com.module.user;
 using Seafight.GameActors;
@@ -31,10 +33,20 @@ public static class TargetFinder
             var gameObject = GetGameObject(actor.Key);
             if (gameObject != null && gameObject.activeInHierarchy)
             {
-                possibleTargets.Add(gameObject);
+                if (GameContext.npcTargetList.Count > 0)
+                {
+                    var npcData = actor.Value.components[Il2CppType.Of<NpcData>()].Cast<NpcData>();
+                    if (GameContext.npcTargetList.Any(n => n.Id == npcData.NpcId))
+                    {
+                        possibleTargets.Add(gameObject);
+                    }
+                }
+                else
+                {
+                    possibleTargets.Add(gameObject);
+                }
             }
         }
-
 
         return SelectTarget(possibleTargets);
     }

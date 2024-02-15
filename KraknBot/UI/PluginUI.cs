@@ -31,7 +31,6 @@ public partial class PluginUI
     private bool shootNPC = false;
     private int currentTab = 0; // 0 for Bot Options, 1 for Other Options
 
-    private List<NPCItem> npcItems = [];
     private string newItemName = "";
     private int selectedAmmoIndex = 0;
 

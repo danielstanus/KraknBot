@@ -16,8 +16,14 @@ namespace KraknBot.UI;
 
 public partial class PluginUI
 {
+    private static int newItemSelectedIndex = 0;
+    private static string npcFilter = string.Empty; // For filtering NPC names
+    private static string newItemName2 = string.Empty; // To store the selected NPC name
+
+
     private void RenderNPCOptions()
     {
+        if (isBotRunning) ImGui.BeginDisabled();
         if (ImGui.BeginTable("NPCs", 4))
         {
             ImGui.TableSetupColumn("Active");
@@ -26,52 +32,84 @@ public partial class PluginUI
             ImGui.TableSetupColumn("Delete");
             ImGui.TableHeadersRow();
 
-            for (int i = npcItems.Count - 1; i >= 0; i--)
+            for (int i = GameContext.npcTargetList.Count - 1; i >= 0; i--)
             {
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
 
-                bool tempActive = npcItems[i].Active;
+                bool tempActive = GameContext.npcTargetList[i].Active;
                 if (ImGui.Checkbox($"##active{i}", ref tempActive))
                 {
-                    npcItems[i].Active = tempActive; // Update if changed
+                    GameContext.npcTargetList[i].Active = tempActive; // Update if changed
                 }
 
                 ImGui.TableNextColumn();
-                ImGui.Text(npcItems[i].Name);
+                ImGui.Text(GameContext.npcTargetList[i].Name + $" (ID: {GameContext.npcTargetList[i].Id})");
 
                 ImGui.TableNextColumn();
                 ImGui.SetNextItemWidth(150.0f);
-                var ammoOptions = GameContext.CurrentAmmunitionList
-                    .Select(a => $"{a.Name} (ID: {a.Id}, Amount: {a.Amount})")
-                    .ToArray();
-                string ammoOptionsCombined = string.Join('\0', ammoOptions) + '\0';
-                int tempAmmoIndex = npcItems[i].AmmoIndex; // Temporary variable
-                if (ImGui.Combo($"##ammo{i}", ref tempAmmoIndex, ammoOptionsCombined, ammoOptions.Length))
+                // Assuming GameContext.CurrentAmmunitionList is updated to use actual ammo IDs
+                string ammoOptionsCombined = string.Join('\0', GameContext.CurrentAmmunitionList.Select(a => $"{a.Name} (ID: {a.Id})")) + '\0';
+                int currentAmmoID = GameContext.npcTargetList[i].AmmoID;
+                int ammoIDIndex = GameContext.CurrentAmmunitionList.FindIndex(a => a.Id == currentAmmoID);
+
+                if (ImGui.Combo($"##ammo{i}", ref ammoIDIndex, ammoOptionsCombined, GameContext.CurrentAmmunitionList.Count))
                 {
-                    npcItems[i].AmmoIndex = tempAmmoIndex; // Update if changed
+                    // Update with the selected Ammo ID
+                    GameContext.npcTargetList[i].AmmoID = GameContext.CurrentAmmunitionList[ammoIDIndex].Id;
                 }
 
                 ImGui.TableNextColumn();
                 if (ImGui.Button($"Delete##{i}"))
                 {
-                    npcItems.RemoveAt(i);
+                    GameContext.npcTargetList.RemoveAt(i);
                 }
             }
 
             ImGui.EndTable();
         }
 
-        ImGui.InputText("Name", ref newItemName, 100);
+        ImGui.InputText("Filter##NPC", ref npcFilter, 100);
         ImGui.SameLine();
         if (ImGui.Button("Add"))
         {
-            if (!string.IsNullOrWhiteSpace(newItemName))
+            if (!string.IsNullOrWhiteSpace(newItemName2))
             {
-                npcItems.Add(new NPCItem { Active = true, Name = newItemName, AmmoIndex = 0 });
-                newItemName = ""; // Reset after adding
+                NPC selectedNPC = GameContext.npcs.FirstOrDefault(npc => npc.Name == newItemName2);
+                if (selectedNPC != null)
+                {
+                    GameContext.npcTargetList.Add(new NPCItem
+                        { Active = true, Name = newItemName2, AmmoID = 0, Id = selectedNPC.Id });
+                    newItemName2 = ""; // Reset after adding
+                }
             }
         }
+
+        // Adjust the size as needed, for example, -1 for width to use the current window width,
+        // and 200 pixels for height to fit approximately 10 rows at a time.
+        if (ImGui.BeginChild("FilteredNPCList", new System.Numerics.Vector2(-1, 200), true,
+                ImGuiWindowFlags.HorizontalScrollbar))
+        {
+            foreach (var npc in GameContext.npcs)
+            {
+                // Filtering logic: show NPC if filter is empty or if name contains the filter text
+                if (string.IsNullOrEmpty(npcFilter) ||
+                    npc.Name.IndexOf(npcFilter, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    ImGui.PushID(npc.Id); // Ensure unique ID for each item for ImGui internals
+                    if (ImGui.Selectable(npc.Name, newItemName2 == npc.Name))
+                    {
+                        newItemName2 = npc.Name; // Update the selected NPC name
+                        newItemSelectedIndex = npc.Id; // Update the selected index
+                    }
+
+                    ImGui.PopID();
+                }
+            }
+
+            ImGui.EndChild(); // End of filtered list child frame
+        }
+        if (isBotRunning) ImGui.EndDisabled();
     }
 
     private string[] GetAmmoOptions()

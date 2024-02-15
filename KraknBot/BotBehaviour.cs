@@ -17,6 +17,7 @@ public class BotBehaviour : MonoBehaviour
     private readonly BotLogic _botLogic = new();
     private IDisposable _lazyUpdateSubscription;
     private IDisposable _tickSubscription;
+    private bool _isTickSubscribed = false;
 
     public static BotLogic Instance { get; private set; }
     public static bool isUpToDate = false;
@@ -40,6 +41,12 @@ public class BotBehaviour : MonoBehaviour
         // Define the interval for updating the ammunition list, e.g., every 5 seconds
         var updateInterval = Il2CppSystem.TimeSpan.FromSeconds(5);
 
+        if (_isTickSubscribed)
+        {
+            Log.Info("Already subscribed to the tick update.");
+            return; // Exit if already subscribed
+        }
+
         // Dispose of any existing subscription before creating a new one
         _tickSubscription?.Dispose();
 
@@ -60,6 +67,9 @@ public class BotBehaviour : MonoBehaviour
                     }
                 );
             })).AddTo(this);
+
+        // Set the flag to true as the subscription is now active
+        _isTickSubscribed = true;
     }
 
     public void StartCollector()

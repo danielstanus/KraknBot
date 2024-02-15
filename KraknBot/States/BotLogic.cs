@@ -1,3 +1,4 @@
+using System.Linq;
 using CakeBox;
 using Il2CppInterop.Runtime;
 using Il2CppSystem;
@@ -9,6 +10,7 @@ using Seafight.Utilities;
 using KraknBot.Helpers;
 using KraknBot.UI;
 using net.bigpoint.seafight.com.module.ship;
+using Seafight.Storage;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -53,6 +55,24 @@ namespace KraknBot.States
                 HarmonyPatches.InputController.SelectTarget(_npcTarget.GetComponent<GameActorBehaviour>());
                 if (HarmonyPatches.InputController.mapView.IsTargetInAttackRange())
                 {
+                    var clientSettingStorage = MainInstaller.Inject<ClientSettingStorage>();
+                    var actors = HarmonyPatches.InputController.gameActorModel.Actors;
+                    foreach (var a in actors)
+                    {
+                        if (a.Key == _npcTarget.GetComponent<GameActorBehaviour>().EntityId)
+                        {
+                            Log.Info("Target found in actors list");
+                            var npcId =  a.Value.components[Il2CppType.Of<NpcData>()].Cast<NpcData>().NpcId;
+                            var targetNPCItem = GameContext.npcTargetList.FirstOrDefault(n => n.Id == npcId && n.Active);
+                            if (targetNPCItem != null) // Check if the NPC is in the list and active
+                            {
+                                // Set the ammo to the correct type based on the NPCItem's AmmoIndex
+                                clientSettingStorage.UpdateClientSetting(ClientSetting.SETTING_ACTIVE_CANNONBALL, targetNPCItem.AmmoID);
+                                Log.Info($"Switched to ammo index {targetNPCItem.AmmoID} for NPC {targetNPCItem.Name}");
+                            }
+
+                        }
+                    }
                     HarmonyPatches.InputController.attackSystem.Attack();
                 }
                 else if (GameContext.PlayerMovementBehaviour.IsMoving)
