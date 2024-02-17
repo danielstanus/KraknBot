@@ -9,6 +9,7 @@ using Seafight;
 using Seafight.GameActors;
 using KraknBot.Helpers;
 using KraknBot.Models;
+using UniRx;
 using UnityEngine;
 using static KraknBot.HarmonyPatches;
 using ImGuiInjection = DearImGuiInjection.DearImGuiInjection;
@@ -118,52 +119,33 @@ public partial class PluginUI
         if (isBotRunning) ImGui.EndDisabled();
     }
 
-
     private void RenderRadarOptions()
     {
         if (isBotRunning) ImGui.BeginDisabled();
 
-        // Initialize a HashSet to keep track of unique NPC IDs
-        HashSet<int> uniqueNpcIds = new HashSet<int>();
-
-        if (ImGui.BeginTable("NPCs", 3))  // Adjusted for three columns: Name, ID, and Add
+        // Ensure the ImGui logic is executed outside of the UnityMainThreadDispatcher callback
+        if (ImGui.BeginTable("NPCs", 3)) // Adjusted for three columns: Name, ID, and Add
         {
             ImGui.TableSetupColumn("Name");
             ImGui.TableSetupColumn("ID", ImGuiTableColumnFlags.WidthFixed, 100.0f); // Fixed width for ID column
             ImGui.TableSetupColumn("Add");
             ImGui.TableHeadersRow();
 
-            var actors = HarmonyPatches.InputController.gameActorModel.Actors;
-
-            foreach (var actor in actors)
+            foreach (var npc in GameContext.npcsToAdd)
             {
-                if (actor.Value.GameActorType != GameActorType.Npc) continue;
+                ImGui.TableNextRow();
+                ImGui.TableNextColumn();
+                ImGui.Text(npc.Name); // Display NPC Name
 
-                var npcData = actor.Value.components[Il2CppType.Of<NpcData>()].Cast<NpcData>();
-                var npcId = npcData.NpcId;
+                ImGui.TableNextColumn();
+                ImGui.Text($"{npc.Id}"); // Display NPC ID
 
-                // Check if we've already added this NPC ID to the table
-                if (!uniqueNpcIds.Contains(npcId) && GameContext.npcTargetList.All(n => n.Id != npcId))
+                ImGui.TableNextColumn();
+                if (ImGui.Button($"Add##{npc.Id}"))
                 {
-                    // Add the NPC ID to the HashSet to track that it's now been added
-                    uniqueNpcIds.Add(npcId);
-
-                    var npcName = HelperMethods.ConvertNonEnglishCharactersToEnglish(LocaDictionary.Get(string.Format("seafight.npcnames.npc.{0}", npcId)));
-
-                    ImGui.TableNextRow();
-
-                    ImGui.TableNextColumn();
-                    ImGui.Text(npcName);  // Display NPC Name
-
-                    ImGui.TableNextColumn();
-                    ImGui.Text($"{npcId}");  // Display NPC ID
-
-                    ImGui.TableNextColumn();
-                    if (ImGui.Button($"Add##{npcId}"))
-                    {
-                        GameContext.npcTargetList.Add(new NPCItem
-                            { Active = true, Name = npcName, AmmoID = 0, Id = npcId });
-                    }
+                    NPCItem newItem = new NPCItem { Active = true, Name = npc.Name, AmmoID = 0, Id = npc.Id };
+                    GameContext.npcTargetList.Add(newItem);
+                    GameContext.UpdateRadarList();
                 }
             }
 
@@ -172,6 +154,7 @@ public partial class PluginUI
 
         if (isBotRunning) ImGui.EndDisabled();
     }
+
 
     private string[] GetAmmoOptions()
     {

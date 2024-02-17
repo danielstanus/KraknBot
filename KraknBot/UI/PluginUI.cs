@@ -22,6 +22,7 @@ public partial class PluginUI
 
     public static bool CollectBoxes { get; set; }
     public static bool ShootNPC { get; set; }
+    public static bool ShootMonster { get; set; }
     public static int RepairThreshold { get; set; } = 50;
 
     public static ReviveOption SelectedReviveOption { get; private set; } = ReviveOption.Emergency;
@@ -29,6 +30,7 @@ public partial class PluginUI
     private bool isBotRunning = false;
     private bool collectBoxes = false;
     private bool shootNPC = false;
+    private bool shootMonster = false;
     private int currentTab = 0; // 0 for Bot Options, 1 for Other Options
 
     private string newItemName = "";
@@ -102,6 +104,7 @@ public partial class PluginUI
         ImGui.Text("Bot Options");
         RenderCollectBoxesOption();
         RenderShootNPCOption();
+        RenderShootMonsterOption();
         RenderReviveOptions();
         RenderRepairTreshold();
     }
@@ -154,6 +157,20 @@ public partial class PluginUI
         }
 
         if (isBotRunning) ImGui.EndDisabled();
+    }
+
+    private void RenderShootMonsterOption()
+    {
+        // if (isBotRunning)
+            ImGui.BeginDisabled();
+        if (ImGui.Checkbox("Shoot Monster", ref shootMonster))
+        {
+            ShootMonster = shootMonster;
+            LogWindow.AddLogMessage(shootMonster ? "Shoot Monster enabled" : "Shoot Monster disabled");
+        }
+
+        // if (isBotRunning)
+            ImGui.EndDisabled();
     }
 
     private void RenderReviveOptions()

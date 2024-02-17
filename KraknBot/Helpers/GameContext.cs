@@ -1,9 +1,13 @@
 using System.Collections.Generic;
+using System.Linq;
+using Bigpoint.Loca;
+using Il2CppInterop.Runtime;
 using KraknBot.Models;
 using net.bigpoint.seafight.com.module.inventory;
 using Seafight;
 using Seafight.GameActors;
 using UnityEngine;
+using UniRx;
 
 namespace KraknBot.Helpers;
 
@@ -113,6 +117,37 @@ public static class GameContext
                 Log.Info("Ammunition list updated.");
             }
         }
+    }
+
+    public static List<(string Name, int Id)> npcsToAdd = new List<(string Name, int Id)>();
+    public static void UpdateRadarList()
+    {
+        npcsToAdd = new List<(string Name, int Id)>();
+        HashSet<int> uniqueNpcIds = new HashSet<int>(GameContext.npcTargetList.Select(n => n.Id));
+
+        DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
+        {
+            var actors = HarmonyPatches.InputController.gameActorModel.Actors;
+            foreach (var actor in actors)
+            {
+                if (actor.Value.GameActorType != GameActorType.Npc) continue;
+
+                var npcData = actor.Value.components[Il2CppType.Of<NpcData>()].Cast<NpcData>();
+                var npcId = npcData.NpcId;
+
+                // Check if NPC is already in the unique set to avoid duplicates
+                if (!uniqueNpcIds.Contains(npcId))
+                {
+                    uniqueNpcIds.Add(npcId); // Add to set to ensure uniqueness
+
+                    var npcName =
+                        HelperMethods.ConvertNonEnglishCharactersToEnglish(
+                            LocaDictionary.Get($"seafight.npcnames.npc.{npcId}"));
+                    // Add the NPC details to the list for later UI rendering
+                    npcsToAdd.Add((Name: npcName, Id: npcId));
+                }
+            }
+        });
     }
 
     public static readonly Dictionary<int, string> ammoNames = new Dictionary<int, string>

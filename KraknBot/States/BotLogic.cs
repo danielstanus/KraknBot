@@ -25,6 +25,8 @@ namespace KraknBot.States
         private Vector3[] _areaTargets = new Vector3[4];
         private int _currentAreaIndex = 0;
 
+        private Vector3 _previousPosition = new Vector3();
+
         public bool Running => _running;
 
         public BotLogic()
@@ -72,8 +74,9 @@ namespace KraknBot.States
                     SetAmmo(); // Set the correct ammo type for the NPC
                     HarmonyPatches.InputController.attackSystem.Attack();
                 }
-                else if (GameContext.PlayerMovementBehaviour.IsMoving)
+                else if (GameContext.PlayerMovementBehaviour.IsMoving && GettingCloserToTarget())
                 {
+
                     Log.Info("Player is moving");
                     return;
                 }
@@ -101,6 +104,25 @@ namespace KraknBot.States
                 }
             }
         }
+
+        private bool GettingCloserToTarget()
+        {
+            var targetPosition = _npcTarget.transform.position;
+            var playerPosition = GameContext.PlayerGameObject.transform.position;
+
+            var previousDistanceToTarget = Vector3.Distance(_previousPosition, targetPosition); // Distance from previous position to target
+            var currentDistanceToTarget = Vector3.Distance(playerPosition, targetPosition); // Distance from current position to target
+
+            Log.Info("Previous distance to target: " + previousDistanceToTarget + " Current distance to target: " + currentDistanceToTarget);
+            if (currentDistanceToTarget < previousDistanceToTarget)
+            {
+                _previousPosition = playerPosition; // Update previous position
+                return true;
+            }
+
+            return false;
+        }
+
 
         private void SetAmmo()
         {
@@ -194,6 +216,7 @@ namespace KraknBot.States
                 }
             }
         }
+
 
         public void Start()
         {

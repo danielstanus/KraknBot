@@ -61,6 +61,7 @@ public class BotBehaviour : MonoBehaviour
                         if (inventorySystem != null)
                         {
                             GameContext.UpdateAmmunitionList(inventorySystem);
+                            GameContext.UpdateRadarList();
                         }
                     }
                 );

@@ -49,10 +49,9 @@ internal unsafe class KraknBot : BasePlugin
         {
             PluginUI.BotBehaviourInstance = _botBehaviourInstance;
             Log.LogInfo("BotBehaviour instance set in PluginUI.");
-            LogWindow.AddLogMessage("BotBehaviour instance set in PluginUI.");
         }
 
-        LogWindow.AddLogMessage("KraknBot loaded.");
+        LogWindow.AddLogMessage("Welcome to Krakn Bot v" + Metadata.Version);
     }
 
     private static void BotUI()
