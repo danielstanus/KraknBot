@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bigpoint.Loca;
 using Il2CppInterop.Runtime;
 using ImGuiNET;
 using net.bigpoint.seafight.com.module.inventory;
@@ -9,6 +10,7 @@ using Seafight.GameActors;
 using KraknBot.Helpers;
 using KraknBot.Models;
 using UnityEngine;
+using static KraknBot.HarmonyPatches;
 using ImGuiInjection = DearImGuiInjection.DearImGuiInjection;
 
 
@@ -36,6 +38,7 @@ public partial class PluginUI
             {
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
+                ImGui.SetNextItemWidth(100.0f);
 
                 bool tempActive = GameContext.npcTargetList[i].Active;
                 if (ImGui.Checkbox($"##active{i}", ref tempActive))
@@ -49,11 +52,13 @@ public partial class PluginUI
                 ImGui.TableNextColumn();
                 ImGui.SetNextItemWidth(150.0f);
                 // Assuming GameContext.CurrentAmmunitionList is updated to use actual ammo IDs
-                string ammoOptionsCombined = string.Join('\0', GameContext.CurrentAmmunitionList.Select(a => $"{a.Name} (ID: {a.Id})")) + '\0';
+                string ammoOptionsCombined =
+                    string.Join('\0', GameContext.CurrentAmmunitionList.Select(a => $"{a.Name} (ID: {a.Id})")) + '\0';
                 int currentAmmoID = GameContext.npcTargetList[i].AmmoID;
                 int ammoIDIndex = GameContext.CurrentAmmunitionList.FindIndex(a => a.Id == currentAmmoID);
 
-                if (ImGui.Combo($"##ammo{i}", ref ammoIDIndex, ammoOptionsCombined, GameContext.CurrentAmmunitionList.Count))
+                if (ImGui.Combo($"##ammo{i}", ref ammoIDIndex, ammoOptionsCombined,
+                        GameContext.CurrentAmmunitionList.Count))
                 {
                     // Update with the selected Ammo ID
                     GameContext.npcTargetList[i].AmmoID = GameContext.CurrentAmmunitionList[ammoIDIndex].Id;
@@ -109,6 +114,62 @@ public partial class PluginUI
 
             ImGui.EndChild(); // End of filtered list child frame
         }
+
+        if (isBotRunning) ImGui.EndDisabled();
+    }
+
+
+    private void RenderRadarOptions()
+    {
+        if (isBotRunning) ImGui.BeginDisabled();
+
+        // Initialize a HashSet to keep track of unique NPC IDs
+        HashSet<int> uniqueNpcIds = new HashSet<int>();
+
+        if (ImGui.BeginTable("NPCs", 3))  // Adjusted for three columns: Name, ID, and Add
+        {
+            ImGui.TableSetupColumn("Name");
+            ImGui.TableSetupColumn("ID", ImGuiTableColumnFlags.WidthFixed, 100.0f); // Fixed width for ID column
+            ImGui.TableSetupColumn("Add");
+            ImGui.TableHeadersRow();
+
+            var actors = HarmonyPatches.InputController.gameActorModel.Actors;
+
+            foreach (var actor in actors)
+            {
+                if (actor.Value.GameActorType != GameActorType.Npc) continue;
+
+                var npcData = actor.Value.components[Il2CppType.Of<NpcData>()].Cast<NpcData>();
+                var npcId = npcData.NpcId;
+
+                // Check if we've already added this NPC ID to the table
+                if (!uniqueNpcIds.Contains(npcId) && GameContext.npcTargetList.All(n => n.Id != npcId))
+                {
+                    // Add the NPC ID to the HashSet to track that it's now been added
+                    uniqueNpcIds.Add(npcId);
+
+                    var npcName = HelperMethods.ConvertNonEnglishCharactersToEnglish(LocaDictionary.Get(string.Format("seafight.npcnames.npc.{0}", npcId)));
+
+                    ImGui.TableNextRow();
+
+                    ImGui.TableNextColumn();
+                    ImGui.Text(npcName);  // Display NPC Name
+
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{npcId}");  // Display NPC ID
+
+                    ImGui.TableNextColumn();
+                    if (ImGui.Button($"Add##{npcId}"))
+                    {
+                        GameContext.npcTargetList.Add(new NPCItem
+                            { Active = true, Name = npcName, AmmoID = 0, Id = npcId });
+                    }
+                }
+            }
+
+            ImGui.EndTable();
+        }
+
         if (isBotRunning) ImGui.EndDisabled();
     }
 

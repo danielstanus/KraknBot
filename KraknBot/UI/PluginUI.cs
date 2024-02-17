@@ -68,7 +68,13 @@ public partial class PluginUI
                             RenderNPCOptions();
                             break;
                         case 2:
+                            RenderRadarOptions();
+                            break;
+                        case 3:
                             RenderOtherOptions();
+                            break;
+                        case 4:
+                            RenderWarBotOptions();
                             break;
                     }
                 }
@@ -82,10 +88,13 @@ public partial class PluginUI
     private void SetupWindow()
     {
         var windowPos = new System.Numerics.Vector2(Screen.width / 2 - 200, Screen.height / 2 - 150);
-        var windowSize = new System.Numerics.Vector2(400, 300);
+        var startSize = new System.Numerics.Vector2(460, 320);  // Start size of the window
 
         ImGui.SetNextWindowPos(windowPos, ImGuiCond.FirstUseEver, new System.Numerics.Vector2(0.5f, 0.5f));
-        ImGui.SetNextWindowSize(windowSize, ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSize(startSize, ImGuiCond.FirstUseEver);
+
+        ImGui.SetNextWindowSizeConstraints(startSize, new System.Numerics.Vector2(float.MaxValue, float.MaxValue)); // The maximum size is just set to a very large value
+
     }
 
     private void RenderBotOptions()

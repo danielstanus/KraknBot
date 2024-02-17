@@ -8,6 +8,7 @@ using Seafight;
 using Seafight.GameActors;
 using Seafight.Utilities;
 using KraknBot.Helpers;
+using KraknBot.Models;
 using KraknBot.UI;
 using net.bigpoint.seafight.com.module.ship;
 using Seafight.Storage;
@@ -45,9 +46,22 @@ namespace KraknBot.States
             if (!_running)
                 return;
 
-            SetTargets();
+            UpdateTargets();
 
-            if (!HandleRepair()) return;
+            var repairResult = HandleRepair();
+            if (repairResult == RepairResult.Repaired)
+            {
+                Log.Info("Health is above threshold");
+            }
+            else if (repairResult == RepairResult.CantRepair)
+            {
+                Log.Info("Can't repair right now");
+            }
+            else if (repairResult == RepairResult.Repairing)
+            {
+                Log.Info("Repairing...");
+                return;
+            }
 
             if (_npcTarget != null && PluginUI.ShootNPC)
             {
@@ -55,24 +69,7 @@ namespace KraknBot.States
                 HarmonyPatches.InputController.SelectTarget(_npcTarget.GetComponent<GameActorBehaviour>());
                 if (HarmonyPatches.InputController.mapView.IsTargetInAttackRange())
                 {
-                    var clientSettingStorage = MainInstaller.Inject<ClientSettingStorage>();
-                    var actors = HarmonyPatches.InputController.gameActorModel.Actors;
-                    foreach (var a in actors)
-                    {
-                        if (a.Key == _npcTarget.GetComponent<GameActorBehaviour>().EntityId)
-                        {
-                            Log.Info("Target found in actors list");
-                            var npcId =  a.Value.components[Il2CppType.Of<NpcData>()].Cast<NpcData>().NpcId;
-                            var targetNPCItem = GameContext.npcTargetList.FirstOrDefault(n => n.Id == npcId && n.Active);
-                            if (targetNPCItem != null) // Check if the NPC is in the list and active
-                            {
-                                // Set the ammo to the correct type based on the NPCItem's AmmoIndex
-                                clientSettingStorage.UpdateClientSetting(ClientSetting.SETTING_ACTIVE_CANNONBALL, targetNPCItem.AmmoID);
-                                Log.Info($"Switched to ammo index {targetNPCItem.AmmoID} for NPC {targetNPCItem.Name}");
-                            }
-
-                        }
-                    }
+                    SetAmmo(); // Set the correct ammo type for the NPC
                     HarmonyPatches.InputController.attackSystem.Attack();
                 }
                 else if (GameContext.PlayerMovementBehaviour.IsMoving)
@@ -105,22 +102,44 @@ namespace KraknBot.States
             }
         }
 
-        private bool HandleRepair()
+        private void SetAmmo()
+        {
+            var clientSettingStorage = MainInstaller.Inject<ClientSettingStorage>();
+            var actors = HarmonyPatches.InputController.gameActorModel.Actors;
+            foreach (var a in actors)
+            {
+                if (a.Key == _npcTarget.GetComponent<GameActorBehaviour>().EntityId)
+                {
+                    Log.Info("Target found in actors list");
+                    var npcId =  a.Value.components[Il2CppType.Of<NpcData>()].Cast<NpcData>().NpcId;
+                    var targetNPCItem = GameContext.npcTargetList.FirstOrDefault(n => n.Id == npcId && n.Active);
+                    if (targetNPCItem != null && targetNPCItem.AmmoID != 0) // Check if the NPC is in the list and active
+                    {
+                        // Set the ammo to the correct type based on the NPCItem's AmmoIndex
+                        clientSettingStorage.UpdateClientSetting(ClientSetting.SETTING_ACTIVE_CANNONBALL, targetNPCItem.AmmoID);
+                        Log.Info($"Switched to ammo index {targetNPCItem.AmmoID} for NPC {targetNPCItem.Name}");
+                    }
+                }
+            }
+        }
+
+        private RepairResult HandleRepair()
         {
             var playerInfo = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.OwnPlayer;
             var repairData = playerInfo.components[Il2CppType.Of<GameActorRepairData>()].Cast<GameActorRepairData>();
             var attacking = HarmonyPatches.InputController.attackSystem.IsAttackInProgress();
-            if (repairData.isRepairing || attacking) return false;
+            Log.Info("IsRepairing: " + repairData.isRepairing + " Attacking: " + attacking);
+            if (repairData.isRepairing || attacking) return RepairResult.CantRepair;
 
             float currentHealth = (float)GameContext.PlayerHealthBehaviour.currentDictionary[(AmsAttributeType.HITPOINTS)];
             float maxHealth = (float)GameContext.PlayerHealthBehaviour.permanentDictionary[(AmsAttributeType.HITPOINTS)];
             if (currentHealth < maxHealth * (PluginUI.RepairThreshold / 100f))
             {
                 InitiateRepair();
-                return false;
+                return RepairResult.Repairing;
             }
 
-            return true;
+            return RepairResult.Repaired;
         }
 
         private void InitiateRepair()
@@ -134,7 +153,7 @@ namespace KraknBot.States
             }
         }
 
-        private void SetTargets()
+        private void UpdateTargets()
         {
             if (PluginUI.ShootNPC)
             {
@@ -155,7 +174,7 @@ namespace KraknBot.States
                     {
                         if (a.Key == _npcTarget.GetComponent<GameActorBehaviour>().EntityId)
                         {
-                            Log.Info("Target found in actors list");
+                            Log.Info("Target found in actors list (NPC)");
                             Log.Info("NPC data: " + a.Value.components[Il2CppType.Of<NpcData>()].Cast<NpcData>().NpcId);
 
                         }
@@ -207,7 +226,7 @@ namespace KraknBot.States
 
         private bool IsTargetValid(GameObject target)
         {
-            return target != null && target.activeInHierarchy;
+            return target != null && target.activeInHierarchy && target.GetComponent<GameActorBehaviour>();
         }
 
         private void MoveEntityToNextArea()

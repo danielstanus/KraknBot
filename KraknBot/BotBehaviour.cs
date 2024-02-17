@@ -22,7 +22,7 @@ public class BotBehaviour : MonoBehaviour
     public static BotLogic Instance { get; private set; }
     public static bool isUpToDate = false;
 
-    void Awake()
+    private void Awake()
     {
         Instance = _botLogic;
         StartCoroutine(CheckVersionCoroutine().WrapToIl2Cpp());
@@ -54,8 +54,6 @@ public class BotBehaviour : MonoBehaviour
         _tickSubscription = Observable.Interval(updateInterval)
             .Subscribe(new Action<long>(_ =>
             {
-                Log.Info("Subscribed to UpdateAmmunitionList...");
-
                 // Ensure UpdateAmmunitionList is called on the main thread
                 DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
                     {

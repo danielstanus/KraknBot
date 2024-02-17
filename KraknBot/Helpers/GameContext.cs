@@ -110,6 +110,7 @@ public static class GameContext
                     // Print the cannonball ID, its amount, and name
                     // Log.Info($"Cannonball ID: {ammoId}, Amount: {ammoAmount}, Name: {ammoName}");
                 }
+                Log.Info("Ammunition list updated.");
             }
         }
     }
@@ -181,7 +182,7 @@ public static class GameContext
         }
     }
 
-    public static List<NPCItem> npcTargetList = [];
+    public static List<NPCItem> npcTargetList = new List<NPCItem>();
 
 
     public static List<NPC> npcs = new List<NPC>

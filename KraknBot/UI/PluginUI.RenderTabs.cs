@@ -43,11 +43,33 @@ public partial class PluginUI
 
         ImGui.SameLine();
 
-        // BM Tab
+        // Radar
         ApplyTabButtonColor(2 == currentTab ? selectedButtonColor : normalButtonColor);
-        if (ImGui.Button("BM"))
+        if (ImGui.Button("Radar"))
         {
             currentTab = 2;
+        }
+
+        ImGui.PopStyleColor(3);
+
+        ImGui.SameLine();
+
+        // BM Tab
+        ApplyTabButtonColor(3 == currentTab ? selectedButtonColor : normalButtonColor);
+        if (ImGui.Button("BM"))
+        {
+            currentTab = 3;
+        }
+
+        ImGui.PopStyleColor(3);
+
+        ImGui.SameLine();
+
+        // BM Tab
+        ApplyTabButtonColor(4 == currentTab ? selectedButtonColor : normalButtonColor);
+        if (ImGui.Button("WarBot"))
+        {
+            currentTab = 4;
         }
 
         ImGui.PopStyleColor(3);

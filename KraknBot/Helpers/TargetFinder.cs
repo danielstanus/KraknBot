@@ -60,10 +60,8 @@ public static class TargetFinder
 
     private static GameObject SelectTarget(List<GameObject> possibleTargets)
     {
-        var findSuboptimal = Random.value < SuboptimalTargetChance;
-        return findSuboptimal
-            ? FindSuboptimalTarget(possibleTargets)
-            : FindNearestTarget(possibleTargets);
+        // var findSuboptimal = Random.value < SuboptimalTargetChance;
+        return FindNearestTarget(possibleTargets);
     }
 
     private static GameObject FindNearestTarget(List<GameObject> targets)
