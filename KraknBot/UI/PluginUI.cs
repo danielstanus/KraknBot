@@ -20,17 +20,14 @@ public partial class PluginUI
     private byte[] bufferInputText = new byte[40];
     public static BotBehaviour BotBehaviourInstance { get; set; }
 
-    public static bool CollectBoxes { get; set; }
-    public static bool ShootNPC { get; set; }
-    public static bool ShootMonster { get; set; }
     public static int RepairThreshold { get; set; } = 50;
 
     public static ReviveOption SelectedReviveOption { get; private set; } = ReviveOption.Emergency;
-
-    private bool isBotRunning = false;
+    public static Targets CurrentTargets { get; set; } = Targets.None;
     private bool collectBoxes = false;
     private bool shootNPC = false;
     private bool shootMonster = false;
+
     private int currentTab = 0; // 0 for Bot Options, 1 for Other Options
 
     private string newItemName = "";
@@ -117,12 +114,12 @@ public partial class PluginUI
 
     private void ToggleBotRunningState()
     {
-        isBotRunning = !isBotRunning;
-        LogWindow.AddLogMessage(isBotRunning ? "Bot started" : "Bot stopped");
+        GameContext.BotRunning = !GameContext.BotRunning;
+        LogWindow.AddLogMessage(GameContext.BotRunning ? "Bot started" : "Bot stopped");
 
         DearImGuiInjection.BepInEx.UnityMainThreadDispatcher.Enqueue(() =>
         {
-            if (isBotRunning)
+            if (GameContext.BotRunning)
             {
                 BotBehaviourInstance.StartCollector();
                 Log.Info("Bot started");
@@ -137,45 +134,45 @@ public partial class PluginUI
 
     private void RenderCollectBoxesOption()
     {
-        if (isBotRunning) ImGui.BeginDisabled();
+        if (GameContext.BotRunning) ImGui.BeginDisabled();
         if (ImGui.Checkbox("Collect Boxes", ref collectBoxes))
         {
-            CollectBoxes = collectBoxes;
+            CurrentTargets = collectBoxes ? (CurrentTargets | Targets.Box) : (CurrentTargets & ~Targets.Box);
             LogWindow.AddLogMessage(collectBoxes ? "Collect Boxes enabled" : "Collect Boxes disabled");
         }
 
-        if (isBotRunning) ImGui.EndDisabled();
+        if (GameContext.BotRunning) ImGui.EndDisabled();
     }
 
     private void RenderShootNPCOption()
     {
-        if (isBotRunning) ImGui.BeginDisabled();
+        if (GameContext.BotRunning) ImGui.BeginDisabled();
         if (ImGui.Checkbox("Shoot NPC", ref shootNPC))
         {
-            ShootNPC = shootNPC;
+            CurrentTargets = shootNPC ? (CurrentTargets | Targets.Npc) : (CurrentTargets & ~Targets.Npc);
             LogWindow.AddLogMessage(shootNPC ? "Shoot NPC enabled" : "Shoot NPC disabled");
         }
 
-        if (isBotRunning) ImGui.EndDisabled();
+        if (GameContext.BotRunning) ImGui.EndDisabled();
     }
 
     private void RenderShootMonsterOption()
     {
-        // if (isBotRunning)
+        if (GameContext.BotRunning)
             ImGui.BeginDisabled();
         if (ImGui.Checkbox("Shoot Monster", ref shootMonster))
         {
-            ShootMonster = shootMonster;
+            CurrentTargets = shootMonster ? (CurrentTargets | Targets.Monster) : (CurrentTargets & ~Targets.Monster);
             LogWindow.AddLogMessage(shootMonster ? "Shoot Monster enabled" : "Shoot Monster disabled");
         }
 
-        // if (isBotRunning)
+        if (GameContext.BotRunning)
             ImGui.EndDisabled();
     }
 
     private void RenderReviveOptions()
     {
-        if (isBotRunning) ImGui.BeginDisabled();
+        if (GameContext.BotRunning) ImGui.BeginDisabled();
         ImGui.Text("Revive Options");
         int selectedOptionIndex = (int)SelectedReviveOption;
         string reviveOptionsCombo = "Emergency\0Standard\0";
@@ -185,12 +182,12 @@ public partial class PluginUI
             LogWindow.AddLogMessage($"Selected Revive Option: {SelectedReviveOption}");
         }
 
-        if (isBotRunning) ImGui.EndDisabled();
+        if (GameContext.BotRunning) ImGui.EndDisabled();
     }
 
     private void RenderRepairTreshold()
     {
-        if (isBotRunning) ImGui.BeginDisabled();
+        if (GameContext.BotRunning) ImGui.BeginDisabled();
         ImGui.Text("Repair Treshold");
         int tempRepairThreshold = RepairThreshold;
         if (ImGui.SliderInt("##RepairThreshold", ref tempRepairThreshold, 0, 100, $"{tempRepairThreshold}%"))
@@ -199,6 +196,6 @@ public partial class PluginUI
             LogWindow.AddLogMessage($"Repair Threshold set to: {RepairThreshold}%");
         }
 
-        if (isBotRunning) ImGui.EndDisabled();
+        if (GameContext.BotRunning) ImGui.EndDisabled();
     }
 }

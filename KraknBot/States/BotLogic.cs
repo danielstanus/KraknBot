@@ -1,17 +1,13 @@
 using System.Linq;
-using CakeBox;
 using Il2CppInterop.Runtime;
-using Il2CppSystem;
-using Il2CppSystem.Collections.Generic;
-using Il2CppSystem.Reflection;
-using Seafight;
-using Seafight.GameActors;
-using Seafight.Utilities;
 using KraknBot.Helpers;
 using KraknBot.Models;
 using KraknBot.UI;
 using net.bigpoint.seafight.com.module.ship;
+using Seafight;
+using Seafight.GameActors;
 using Seafight.Storage;
+using Seafight.Utilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -19,15 +15,13 @@ namespace KraknBot.States
 {
     public class BotLogic
     {
-        private bool _running = false;
         private GameObject _boxTarget;
+        private GameObject _monsterTarget;
         private GameObject _npcTarget;
         private Vector3[] _areaTargets = new Vector3[4];
         private int _currentAreaIndex = 0;
 
         private Vector3 _previousPosition = new Vector3();
-
-        public bool Running => _running;
 
         public BotLogic()
         {
@@ -45,7 +39,7 @@ namespace KraknBot.States
 
         public void Update()
         {
-            if (!_running)
+            if (!GameContext.BotRunning)
                 return;
 
             UpdateTargets();
@@ -65,19 +59,25 @@ namespace KraknBot.States
                 return;
             }
 
-            if (_npcTarget != null && PluginUI.ShootNPC)
+            if (GameContext.Master != null)
             {
-                Log.Info("NPC Target found");
+                Log.Info("Master is set. Following master...");
+                FollowMaster();
+                return;
+            }
+
+            if (_npcTarget != null && PluginUI.CurrentTargets.HasFlag(Targets.Npc))
+            {
                 HarmonyPatches.InputController.SelectTarget(_npcTarget.GetComponent<GameActorBehaviour>());
                 if (HarmonyPatches.InputController.mapView.IsTargetInAttackRange())
                 {
                     SetAmmo(); // Set the correct ammo type for the NPC
                     HarmonyPatches.InputController.attackSystem.Attack();
                 }
-                else if (GameContext.PlayerMovementBehaviour.IsMoving && GettingCloserToTarget())
+                else if (GameContext.PlayerMovementBehaviour.IsMoving && GettingCloserToTarget(_npcTarget))
                 {
 
-                    Log.Info("Player is moving");
+                    Log.Info("Player is moving towards the target");
                     return;
                 }
                 else
@@ -85,11 +85,32 @@ namespace KraknBot.States
                     HarmonyPatches.InputController.attackSystem.MoveToTargetPosition(3f);
                 }
             }
-            else if (_boxTarget != null && PluginUI.CollectBoxes)
+            else if (_monsterTarget != null && PluginUI.CurrentTargets.HasFlag(Targets.Monster))
             {
-                if (GameContext.PlayerMovementBehaviour.IsMoving)
+                HarmonyPatches.InputController.SelectTarget(_monsterTarget.GetComponent<GameActorBehaviour>());
+                if (MapUtils.InsideEllipse(4, _monsterTarget.transform.position, GameContext.PlayerGameObject.transform.position))
                 {
-                    Log.Info("Player is moving");
+                    Log.Info("Monster is in attack range");
+                    HarmonyPatches.InputController.attackSystem.Attack();
+                }
+                else if (GameContext.PlayerMovementBehaviour.IsMoving && GettingCloserToTarget(_monsterTarget))
+                {
+
+                    Log.Info("Player is moving towards the target");
+                    return;
+                }
+                else
+                {
+                    HarmonyPatches.InputController.attackSystem.MoveToTargetPosition(3f);
+                }
+            }
+            else if (_boxTarget != null && PluginUI.CurrentTargets.HasFlag(Targets.Box))
+            {
+                if (GameContext.PlayerMovementBehaviour.IsMoving && GettingCloserToTarget(_boxTarget))
+                {
+
+                    Log.Info("Player is moving towards the target");
+                    return;
                 }
                 else
                 {
@@ -105,9 +126,9 @@ namespace KraknBot.States
             }
         }
 
-        private bool GettingCloserToTarget()
+        private bool GettingCloserToTarget(GameObject target)
         {
-            var targetPosition = _npcTarget.transform.position;
+            var targetPosition = target.transform.position;
             var playerPosition = GameContext.PlayerGameObject.transform.position;
 
             var previousDistanceToTarget = Vector3.Distance(_previousPosition, targetPosition); // Distance from previous position to target
@@ -151,12 +172,17 @@ namespace KraknBot.States
             var repairData = playerInfo.components[Il2CppType.Of<GameActorRepairData>()].Cast<GameActorRepairData>();
             var attacking = HarmonyPatches.InputController.attackSystem.IsAttackInProgress();
             Log.Info("IsRepairing: " + repairData.isRepairing + " Attacking: " + attacking);
-            if (repairData.isRepairing || attacking) return RepairResult.CantRepair;
+            if (repairData.isRepairing || attacking)
+            {
+                Log.Info("Can't repair right now");
+                return RepairResult.CantRepair;
+            }
 
             float currentHealth = (float)GameContext.PlayerHealthBehaviour.currentDictionary[(AmsAttributeType.HITPOINTS)];
             float maxHealth = (float)GameContext.PlayerHealthBehaviour.permanentDictionary[(AmsAttributeType.HITPOINTS)];
             if (currentHealth < maxHealth * (PluginUI.RepairThreshold / 100f))
             {
+                Log.Info("Starting repair...");
                 InitiateRepair();
                 return RepairResult.Repairing;
             }
@@ -177,7 +203,7 @@ namespace KraknBot.States
 
         private void UpdateTargets()
         {
-            if (PluginUI.ShootNPC)
+            if (PluginUI.CurrentTargets.HasFlag(Targets.Npc))
             {
                 if (_npcTarget == null || !IsTargetValid(_npcTarget))
                 {
@@ -191,7 +217,6 @@ namespace KraknBot.States
                 {
                     Log.Info("Current NPC target: " + _npcTarget.name);
                     var actors = HarmonyPatches.InputController.gameActorModel.Actors;
-                    // var npcEntity = _npcTarget.GetComponent<GameActorBehaviour>().EntityId;
                     foreach (var a in actors)
                     {
                         if (a.Key == _npcTarget.GetComponent<GameActorBehaviour>().EntityId)
@@ -204,7 +229,33 @@ namespace KraknBot.States
                 }
             }
 
-            if (PluginUI.CollectBoxes)
+            if (PluginUI.CurrentTargets.HasFlag(Targets.Monster))
+            {
+                if (_monsterTarget == null || !IsTargetValid(_monsterTarget))
+                {
+                    _monsterTarget = TargetFinder.FindNext(GameActorType.Monster);
+                    if (_monsterTarget == null)
+                    {
+                        Log.Info("No more Monsters to shoot");
+                    }
+                }
+                else
+                {
+                    Log.Info("Current Monster target: " + _monsterTarget.name);
+                    var actors = HarmonyPatches.InputController.gameActorModel.Actors;
+                    foreach (var a in actors)
+                    {
+                        if (a.Key == _monsterTarget.GetComponent<GameActorBehaviour>().EntityId)
+                        {
+                            Log.Info("Target found in actors list (NPC)");
+                            Log.Info("Monster data: " + a.Value.components[Il2CppType.Of<MonsterData>()].Cast<MonsterData>().MonsterId);
+
+                        }
+                    }
+                }
+            }
+
+            if (PluginUI.CurrentTargets.HasFlag(Targets.Box))
             {
                 if (_boxTarget == null || !IsTargetValid(_boxTarget))
                 {
@@ -224,12 +275,12 @@ namespace KraknBot.States
             var player = HarmonyPatches.InputController.mapView.GetEntity(entityId);
             var playerObject = player.gameObject;
 
-            _running = true;
+            GameContext.BotRunning = true;
         }
 
         public void Stop()
         {
-            this._running = false;
+            GameContext.BotRunning = false;
             this._boxTarget = null;
         }
 
@@ -243,6 +294,27 @@ namespace KraknBot.States
             Vector3 movePosition;
             movePosition.x = targetPosition.x;
             movePosition.y = targetPosition.y;
+            movePosition.z = -100;
+            HarmonyPatches.InputController.OnClickOnMap(movePosition);
+        }
+
+        private void FollowMaster()
+        {
+            if (GameContext.Master == null)
+                return;
+
+            var playerPosition = GameContext.PlayerGameObject.transform.position;
+            var targetPosition = GameContext.Master.transform.position;
+
+            if (Vector3.Distance(playerPosition, targetPosition) < 5)
+            {
+                Log.Info("Player is close to master");
+                return;
+            }
+
+            Vector3 movePosition;
+            movePosition.x = targetPosition.x + Random.Range(-3, 3);
+            movePosition.y = targetPosition.y + Random.Range(-2, 2);;
             movePosition.z = -100;
             HarmonyPatches.InputController.OnClickOnMap(movePosition);
         }

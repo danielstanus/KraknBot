@@ -33,7 +33,7 @@ public static class TargetFinder
             var gameObject = GetGameObject(actor.Key);
             if (gameObject != null && gameObject.activeInHierarchy)
             {
-                if (GameContext.npcTargetList.Count > 0)
+                if (GameContext.npcTargetList.Count > 0 && actor.Value.GameActorType == GameActorType.Npc)
                 {
                     var npcData = actor.Value.components[Il2CppType.Of<NpcData>()].Cast<NpcData>();
                     if (GameContext.npcTargetList.Any(n => n.Id == npcData.NpcId))

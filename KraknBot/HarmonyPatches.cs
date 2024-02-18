@@ -6,6 +6,7 @@ using Seafight.GameActors;
 using Seafight.Utilities;
 using KraknBot.Helpers;
 using KraknBot.Map;
+using KraknBot.Models;
 using KraknBot.UI;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -68,9 +69,9 @@ public static class HarmonyPatches
     public static void OnOpenPostfix(DeathWindowBehaviour __instance)
     {
         // Check if the bot is running
-        if (!BotBehaviour.Instance?.Running ?? true)
+        if (!GameContext.BotRunning)
         {
-            return; // Bot is not running, exit the method
+            return;
         }
 
         InventorySystem inventorySystem = MainInstaller.Inject<InventorySystem>();

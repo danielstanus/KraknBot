@@ -78,7 +78,7 @@ public partial class PluginUI
 
         // Start/Stop Bot Tab (Dynamic color based on bot state)
         ApplyButtonColorForBotState();
-        if (ImGui.Button(isBotRunning ? "Stop Bot" : "Start Bot"))
+        if (ImGui.Button(GameContext.BotRunning ? "Stop Bot" : "Start Bot"))
         {
             ToggleBotRunningState();
         }
@@ -95,7 +95,7 @@ public partial class PluginUI
 
     private void ApplyButtonColorForBotState()
     {
-        System.Numerics.Vector4 buttonColor = isBotRunning
+        System.Numerics.Vector4 buttonColor = GameContext.BotRunning
             ? new System.Numerics.Vector4(0.8f, 0.2f, 0.2f, 1.0f) // Red for "stop"
             : new System.Numerics.Vector4(0.2f, 0.8f, 0.2f, 1.0f); // Green for "start"
         ApplyTabButtonColor(buttonColor);

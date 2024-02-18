@@ -19,12 +19,10 @@ public class BotBehaviour : MonoBehaviour
     private IDisposable _tickSubscription;
     private bool _isTickSubscribed = false;
 
-    public static BotLogic Instance { get; private set; }
     public static bool isUpToDate = false;
 
     private void Awake()
     {
-        Instance = _botLogic;
         StartCoroutine(CheckVersionCoroutine().WrapToIl2Cpp());
 
         // Start the tick subscription when the GameObject is created

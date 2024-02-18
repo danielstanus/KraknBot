@@ -26,7 +26,7 @@ public partial class PluginUI
 
     private void RenderNPCOptions()
     {
-        if (isBotRunning) ImGui.BeginDisabled();
+        if (GameContext.BotRunning) ImGui.BeginDisabled();
         if (ImGui.BeginTable("NPCs", 4))
         {
             ImGui.TableSetupColumn("Active");
@@ -116,12 +116,12 @@ public partial class PluginUI
             ImGui.EndChild(); // End of filtered list child frame
         }
 
-        if (isBotRunning) ImGui.EndDisabled();
+        if (GameContext.BotRunning) ImGui.EndDisabled();
     }
 
     private void RenderRadarOptions()
     {
-        if (isBotRunning) ImGui.BeginDisabled();
+        if (GameContext.BotRunning) ImGui.BeginDisabled();
 
         // Ensure the ImGui logic is executed outside of the UnityMainThreadDispatcher callback
         if (ImGui.BeginTable("NPCs", 3)) // Adjusted for three columns: Name, ID, and Add
@@ -152,7 +152,7 @@ public partial class PluginUI
             ImGui.EndTable();
         }
 
-        if (isBotRunning) ImGui.EndDisabled();
+        if (GameContext.BotRunning) ImGui.EndDisabled();
     }
 
 

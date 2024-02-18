@@ -17,6 +17,10 @@ public static class GameContext
     private static MovementBehaviour _movementBehaviour;
     private static HealthBehaviour _healthBehaviour;
 
+    public static bool BotRunning { get; set; } = false;
+
+    public static GameObject Master;
+
     public static GameObject PlayerGameObject
     {
         get
@@ -66,6 +70,7 @@ public static class GameContext
         _healthBehaviour = null;
     }
 
+    // Debug method to print the player's inventory cannonball amounts
     public static void foo()
     {
         var entityId = HarmonyPatches.InputController.gameActorModel.playerInfoSystem.UserId;
@@ -93,16 +98,15 @@ public static class GameContext
     public static void UpdateAmmunitionList(InventorySystem inventorySystem)
     {
         CurrentAmmunitionList.Clear();
-        // Assuming inventorySystem.Inventory gives you access to ammunition data
         foreach (var item in inventorySystem.Inventory)
         {
-            if (item.Key == InventoryItemType.BALLS) // Assuming BALLS represents ammunition
+            if (item.Key == InventoryItemType.BALLS)
             {
                 foreach (var ammo in item.Value)
                 {
                     int ammoId = ammo.Key;
                     long ammoAmount = ammo.Value;
-                    ammoNames.TryGetValue(ammoId, out string ammoName); // Assuming ammoNames is accessible here
+                    ammoNames.TryGetValue(ammoId, out string ammoName);
 
                     CurrentAmmunitionList.Add(new Ammo
                     {
@@ -114,7 +118,7 @@ public static class GameContext
                     // Print the cannonball ID, its amount, and name
                     // Log.Info($"Cannonball ID: {ammoId}, Amount: {ammoAmount}, Name: {ammoName}");
                 }
-                Log.Info("Ammunition list updated.");
+                // Log.Info("Ammunition list updated.");
             }
         }
     }
